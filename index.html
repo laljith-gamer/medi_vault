@@ -99,7 +99,7 @@
                         <div class="password-input">
                             <input type="password" id="password" 
                                    placeholder="Enter strong password" required>
-                            <span id="togglePassword" class="toggle-password">👁️‍🗨️</span>
+                            <span id="togglePassword" class="toggle-password">👁️</span>
                         </div>
                         <small>Min 8 characters, include uppercase, lowercase, number & special character</small>
                         <div id="passwordStrength" class="password-strength"></div>
@@ -142,7 +142,7 @@
                     <div class="password-input">
                         <input type="password" id="loginPassword" 
                                placeholder="Enter your password" required>
-                        <span id="toggleLoginPassword" class="toggle-password">👁️‍🗨️</span>
+                        <span id="toggleLoginPassword" class="toggle-password">👁️</span>
                     </div>
                 </div>
 
@@ -181,11 +181,14 @@
                     <p id="dashboardHospitalId">ID: HOSP-001</p>
                 </div>
                 <div class="header-actions">
-                    <button class="btn btn-secondary" onclick="switchDashboardView('dashboard')">
+                    <button class="btn btn-secondary" onclick="switchView('dashboard')">
                         📊 Dashboard
                     </button>
-                    <button class="btn btn-primary" onclick="switchDashboardView('addRecord')">
+                    <button class="btn btn-primary" onclick="switchView('addRecord')">
                         ➕ Add Record
+                    </button>
+                    <button class="btn btn-secondary" onclick="switchView('records')">
+                        📋 View Records
                     </button>
                     <button class="btn btn-danger" id="logoutBtn">
                         🚪 Logout
@@ -196,24 +199,40 @@
 
         <!-- Dashboard Content -->
         <div class="dashboard-content">
-            <!-- ============== DASHBOARD VIEW ============== -->
-            <div id="dashboardView" class="dashboard-view">
+            <!-- ============== DASHBOARD HOME VIEW ============== -->
+            <div id="dashboardHome" class="dashboard-view">
                 <!-- Stats Cards -->
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon">📋</div>
                         <div class="stat-details">
-                            <h3 id="recordCount">0</h3>
+                            <h3 id="totalRecords">0</h3>
                             <p>Total Medical Records</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-details">
+                            <h3 id="activeRecords">0</h3>
+                            <p>Active Records</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-details">
+                            <h3 id="totalPatients">0</h3>
+                            <p>Total Patients</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Recent Records -->
-                <div class="records-section">
-                    <h2>Recent Medical Records</h2>
-                    <div id="recordsList" class="records-list">
-                        <p class="text-center">Medical records will appear here once created</p>
+                <!-- Recent Activity -->
+                <div class="recent-activity">
+                    <h2>Recent Activity</h2>
+                    <div id="recentActivityList">
+                        <p class="text-center text-muted">Recent activities will appear here</p>
                     </div>
                 </div>
             </div>
@@ -222,43 +241,48 @@
             <div id="addRecordView" class="add-record-view hidden">
                 <h2>Add New Medical Record</h2>
 
-                <!-- Patient Verification -->
-                <div class="verification-card">
-                    <h3>Patient Verification</h3>
-                    <p class="text-sm mb-4">Verify patient before adding medical record</p>
-
-                    <div class="verification-form">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="patientId">Patient ID *</label>
-                                <input type="text" id="patientId" 
-                                       placeholder="e.g., PAT-2025-001" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="patientPhone">Patient Phone *</label>
-                                <input type="tel" id="patientPhone" 
-                                       placeholder="+919876543210" 
-                                       pattern="\+91[6-9][0-9]{9}" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="patientName">Patient Name *</label>
-                                <input type="text" id="patientName" 
-                                       placeholder="Full name" required>
-                            </div>
+                <!-- CORRECTED: Patient Verification Section - Name Field Removed -->
+                <div id="patientVerificationSection" class="form-section">
+                    <h3>Verify Patient</h3>
+                    <p class="help-text">Enter patient details to verify and add medical record</p>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="patientId">Patient ID (ABHA/Aadhaar) *</label>
+                            <input type="text" 
+                                   id="patientId" 
+                                   placeholder="Enter 12-digit Patient ID" 
+                                   maxlength="12" 
+                                   pattern="\d{12}" 
+                                   required />
+                            <small>Must be exactly 12 digits</small>
                         </div>
-
-                        <button type="button" id="verifyPatientBtn" class="btn btn-primary">
-                            Verify Patient
-                        </button>
-
-                        <div id="verificationStatus" class="verification-status">
-                            ✗ Patient Not Verified
+                        
+                        <div class="form-group">
+                            <label for="patientPhone">Phone Number *</label>
+                            <input type="tel" 
+                                   id="patientPhone" 
+                                   placeholder="Enter 10-digit phone" 
+                                   maxlength="10" 
+                                   pattern="\d{10}" 
+                                   required />
+                            <small>Must be exactly 10 digits</small>
                         </div>
-
-                        <div id="patientInfo" class="patient-info hidden"></div>
                     </div>
+
+                    <!-- CORRECTED: Removed patientName field completely -->
+
+                    <div id="verificationStatus" class="verification-status">
+                        ⚠ Patient Not Verified
+                    </div>
+
+                    <div id="patientInfo" class="patient-info">
+                        <p>Enter Patient ID and Phone Number to verify</p>
+                    </div>
+
+                    <button type="button" id="verifyPatientBtn" class="btn btn-primary">
+                        Verify Patient
+                    </button>
                 </div>
 
                 <!-- Medical Record Form -->
@@ -269,26 +293,24 @@
                             <h3>Visit Information</h3>
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="visitType">Visit Type *</label>
-                                    <select id="visitType" required>
-                                        <option value="OPD">OPD</option>
-                                        <option value="IPD">IPD</option>
-                                        <option value="Emergency">Emergency</option>
-                                        <option value="Follow-up">Follow-up</option>
-                                        <option value="Telemedicine">Telemedicine</option>
-                                    </select>
+                                    <label for="visitDate">Visit Date *</label>
+                                    <input type="date" id="visitDate" required>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="recordType">Record Type *</label>
-                                    <select id="recordType" required>
-                                        <option value="OPD Consultation">OPD Consultation</option>
-                                        <option value="Prescription">Prescription</option>
-                                        <option value="Diagnostic Report - Pathology">Diagnostic Report - Pathology</option>
-                                        <option value="Diagnostic Report - Radiology">Diagnostic Report - Radiology</option>
-                                        <option value="Discharge Summary">Discharge Summary</option>
-                                        <option value="Surgery Record">Surgery Record</option>
-                                        <option value="Emergency Record">Emergency Record</option>
+                                    <label for="department">Department *</label>
+                                    <select id="department" required>
+                                        <option value="">Select Department</option>
+                                        <option value="General Medicine">General Medicine</option>
+                                        <option value="Cardiology">Cardiology</option>
+                                        <option value="Neurology">Neurology</option>
+                                        <option value="Orthopedics">Orthopedics</option>
+                                        <option value="Pediatrics">Pediatrics</option>
+                                        <option value="Gynecology">Gynecology</option>
+                                        <option value="Dermatology">Dermatology</option>
+                                        <option value="ENT">ENT</option>
+                                        <option value="Ophthalmology">Ophthalmology</option>
+                                        <option value="Emergency">Emergency</option>
                                     </select>
                                 </div>
                             </div>
@@ -301,27 +323,7 @@
                                 <div class="form-group">
                                     <label for="doctorName">Doctor Name *</label>
                                     <input type="text" id="doctorName" 
-                                           placeholder="Dr. Name" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="doctorRegNumber">Registration Number *</label>
-                                    <input type="text" id="doctorRegNumber" 
-                                           placeholder="NMC-I-12345" required>
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="doctorQualification">Qualification *</label>
-                                    <input type="text" id="doctorQualification" 
-                                           placeholder="MBBS, MD" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="doctorSpecialization">Specialization</label>
-                                    <input type="text" id="doctorSpecialization" 
-                                           placeholder="General Medicine">
+                                           placeholder="Dr. Full Name" required>
                                 </div>
                             </div>
                         </div>
@@ -337,39 +339,39 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="complaintDuration">Complaint Duration *</label>
-                                <input type="text" id="complaintDuration" 
-                                       placeholder="e.g., 3 days, 2 weeks, 1 month" required>
-                                <small>Specify how long the patient has had this complaint</small>
+                                <label for="vitalSigns">Vital Signs</label>
+                                <textarea id="vitalSigns" rows="2" 
+                                          placeholder="BP, Temp, Pulse, SpO2, etc."></textarea>
                             </div>
 
                             <div class="form-group">
-                                <label for="diagnosis">Provisional Diagnosis *</label>
-                                <textarea id="diagnosis" rows="3" 
+                                <label for="provisionalDiagnosis">Provisional Diagnosis *</label>
+                                <textarea id="provisionalDiagnosis" rows="3" 
                                           placeholder="Provisional diagnosis" required></textarea>
                             </div>
 
                             <div class="form-group">
-                                <label for="treatment">Treatment Plan *</label>
-                                <textarea id="treatment" rows="4" 
+                                <label for="finalDiagnosis">Final Diagnosis</label>
+                                <textarea id="finalDiagnosis" rows="3" 
+                                          placeholder="Final diagnosis (if confirmed)"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="treatmentPlan">Treatment Plan *</label>
+                                <textarea id="treatmentPlan" rows="4" 
                                           placeholder="Detailed treatment plan" required></textarea>
                             </div>
 
                             <div class="form-group">
-                                <label for="medications">Medications</label>
+                                <label for="medications">Medications Prescribed</label>
                                 <textarea id="medications" rows="4" 
-                                          placeholder="List medications (one per line)"></textarea>
-                                <small>Enter one medication per line or as JSON format</small>
+                                          placeholder="List medications with dosage and duration"></textarea>
                             </div>
 
                             <div class="form-group">
-                                <label for="severity">Severity *</label>
-                                <select id="severity" required>
-                                    <option value="Low">Low</option>
-                                    <option value="Medium" selected>Medium</option>
-                                    <option value="High">High</option>
-                                    <option value="Critical">Critical</option>
-                                </select>
+                                <label for="labTests">Lab Tests Ordered</label>
+                                <textarea id="labTests" rows="3" 
+                                          placeholder="List any lab tests or imaging ordered"></textarea>
                             </div>
                         </div>
 
@@ -386,14 +388,14 @@
                                 <div class="form-group">
                                     <label for="followUpInstructions">Follow-up Instructions</label>
                                     <input type="text" id="followUpInstructions" 
-                                           placeholder="Follow-up instructions">
+                                           placeholder="Instructions for follow-up visit">
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="notes">Additional Notes</label>
-                                <textarea id="notes" rows="3" 
-                                          placeholder="Any additional notes"></textarea>
+                                <label for="additionalNotes">Additional Notes</label>
+                                <textarea id="additionalNotes" rows="3" 
+                                          placeholder="Any additional notes or observations"></textarea>
                             </div>
 
                             <div class="form-group">
@@ -401,20 +403,29 @@
                                 <input type="file" id="attachments" multiple 
                                        accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
                                 <small>Upload relevant documents (PDF, Images, Word docs)</small>
+                                <div id="selectedFiles" class="selected-files"></div>
                             </div>
                         </div>
 
                         <!-- Submit Button -->
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary btn-lg">
-                                Add Medical Record
+                                💾 Add Medical Record
                             </button>
                             <button type="button" class="btn btn-secondary btn-lg" 
-                                    onclick="switchDashboardView('dashboard')">
-                                Cancel
+                                    onclick="switchView('dashboard')">
+                                ❌ Cancel
                             </button>
                         </div>
                     </form>
+                </div>
+            </div>
+
+            <!-- ============== VIEW RECORDS VIEW ============== -->
+            <div id="recordsView" class="records-view hidden">
+                <h2>Medical Records</h2>
+                <div id="recordsList" class="records-list">
+                    <p class="text-center text-muted">Medical records will appear here once created</p>
                 </div>
             </div>
         </div>
