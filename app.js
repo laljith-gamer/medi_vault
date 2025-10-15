@@ -1,7 +1,7 @@
 // Supabase Configuration - Update with your Supabase credentials
-const SUPABASE_URL = "https://qfkvfhuysebmnrctahzs.supabase.co";
+const SUPABASE_URL = "https://uqozcnbbbkrsecfiecme.supabase.co";
 const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFma3ZmaHV5c2VibW5yY3RhaHpzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAzNDA5MTcsImV4cCI6MjA3NTkxNjkxN30.3Z4a61aS8Pj3OPHY55U7PRyEUMH937j0VYxC_BRLjh0";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVxb3pjbmJiYmtyc2VjZmllY21lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAzNjc1MzksImV4cCI6MjA3NTk0MzUzOX0.uDT17azQATeozQeZDzWRBRMgHBVgko9VZB2vLUbLXD4";
 
 // Initialize Supabase with comprehensive error handling
 let supabase;
