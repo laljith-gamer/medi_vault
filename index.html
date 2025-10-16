@@ -3,27 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediVault - Secure Healthcare Records Management</title>
-    <meta name="description" content="Secure medical records management system for hospitals. ABDM compliant, FHIR R4 compatible healthcare data management.">
+    <title>MediVault - Secure Medical Records Platform</title>
     <link rel="stylesheet" href="styles.css">
-    
-    <!-- FIXED: Multiple CDN options with fallback -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js" 
-            onerror="loadSupabaseBackup()"></script>
-    
-    <!-- Backup CDN loader -->
-    <script>
-        function loadSupabaseBackup() {
-            console.warn("⚠️ jsDelivr CDN failed, trying unpkg backup...");
-            const script = document.createElement('script');
-            script.src = 'https://unpkg.com/@supabase/supabase-js@2';
-            script.onerror = () => {
-                console.error("❌ All CDN sources failed. Please check your internet connection.");
-                alert("Failed to load required libraries. Please refresh the page or check your internet connection.");
-            };
-            document.head.appendChild(script);
-        }
-    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <!-- Loading Screen -->
@@ -32,12 +17,13 @@
         <p>Initializing secure connection...</p>
     </div>
 
-    <!-- Connection Status Bar -->
+    <!-- Connection Status Notification -->
     <div id="connectionStatus" class="connection-status hidden"></div>
 
-    <!-- ============================================================================ -->
+    <!-- Notification Container -->
+    <div id="notification" class="notification"></div>
+
     <!-- SIGNUP SECTION -->
-    <!-- ============================================================================ -->
     <section id="signupSection" class="auth-section hidden">
         <div class="auth-container">
             <div class="auth-header">
@@ -45,11 +31,12 @@
                 <p class="subtitle">Join our secure medical records network</p>
             </div>
 
-            <!-- Step 1: Hospital Verification -->
             <div id="verificationStep" class="form-step">
-                <h2>Hospital Verification</h2>
-                <p class="text-sm mb-4">Verify your hospital credentials to begin registration</p>
-                
+                <h2 class="text-center mb-4">Verify Hospital Credentials</h2>
+                <p class="text-center text-sm" style="color: var(--gray-500); margin-bottom: 2rem;">
+                    Verify your hospital credentials to begin registration
+                </p>
+
                 <div class="form-group">
                     <label for="hospitalId">Hospital ID *</label>
                     <input type="text" id="hospitalId" placeholder="e.g., AIIMS-DEL-001" required>
@@ -60,21 +47,17 @@
                     <input type="text" id="licenseNumber" placeholder="e.g., DL/MED/2023/001" required>
                 </div>
 
-                <button type="button" id="verifyBtn" class="btn btn-primary">
+                <button type="button" id="verifyBtn" class="btn btn-primary btn-lg">
                     Verify Hospital
                 </button>
 
-                <p class="text-center mt-4">
-                    Already have an account? 
-                    <a href="#" onclick="showLogin()">Sign in here</a>
+                <p class="text-center mt-4 text-sm">
+                    Already have an account? <a href="#" id="showLogin">Sign in here</a>
                 </p>
             </div>
 
-            <!-- Step 2: Registration Form -->
             <div id="registrationStep" class="form-step hidden">
-                <h2>Complete Registration</h2>
-                <p class="text-sm mb-4">Set up your admin account</p>
-
+                <h2 class="text-center mb-4">Set up your admin account</h2>
                 <form id="signupForm">
                     <div class="form-group">
                         <label for="hospitalName">Hospital Name</label>
@@ -88,31 +71,33 @@
 
                     <div class="form-group">
                         <label for="contactPhone">Contact Phone *</label>
-                        <input type="tel" id="contactPhone" 
-                               placeholder="+919876543210" 
-                               pattern="\+91[0-9]{10,11}" required>
-                        <small>Format: +91XXXXXXXXXX (mobile) or +91XXXXXXXXXXX (landline)</small>
+                        <div class="phone-input-group">
+                            <select id="countryCode" class="country-code-select">
+                                <option value="+91" selected>🇮🇳 +91</option>
+                            </select>
+                            <input type="tel" id="contactPhone" placeholder="9876543210" pattern="[0-9]{10}" maxlength="10" required>
+                        </div>
+                        <small>Enter 10-digit mobile number</small>
                     </div>
+                    
+                    
 
                     <div class="form-group">
                         <label for="password">Password *</label>
                         <div class="password-input">
-                            <input type="password" id="password" 
-                                   placeholder="Enter strong password" required>
-                            <span id="togglePassword" class="toggle-password">👁️</span>
+                            <input type="password" id="password" placeholder="Create strong password" required>
+                            <button type="button" id="togglePassword" class="toggle-password">👁️</button>
                         </div>
-                        <small>Min 8 characters, include uppercase, lowercase, number & special character</small>
                         <div id="passwordStrength" class="password-strength"></div>
                     </div>
 
                     <div class="form-group">
                         <label for="confirmPassword">Confirm Password *</label>
-                        <input type="password" id="confirmPassword" 
-                               placeholder="Re-enter password" required>
+                        <input type="password" id="confirmPassword" placeholder="Re-enter password" required>
                         <div id="passwordMatch" class="password-match"></div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary btn-lg">
                         Complete Registration
                     </button>
                 </form>
@@ -120,9 +105,7 @@
         </div>
     </section>
 
-    <!-- ============================================================================ -->
     <!-- LOGIN SECTION -->
-    <!-- ============================================================================ -->
     <section id="loginSection" class="auth-section hidden">
         <div class="auth-container">
             <div class="auth-header">
@@ -133,75 +116,56 @@
             <form id="loginForm">
                 <div class="form-group">
                     <label for="loginHospitalId">Hospital ID *</label>
-                    <input type="text" id="loginHospitalId" 
-                           placeholder="e.g., AIIMS-DEL-001" required>
+                    <input type="text" id="loginHospitalId" placeholder="e.g., AIIMS-DEL-001" required>
                 </div>
 
                 <div class="form-group">
                     <label for="loginPassword">Password *</label>
                     <div class="password-input">
-                        <input type="password" id="loginPassword" 
-                               placeholder="Enter your password" required>
-                        <span id="toggleLoginPassword" class="toggle-password">👁️</span>
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                        <button type="button" id="toggleLoginPassword" class="toggle-password">👁️</button>
                     </div>
                 </div>
 
-                <div class="form-group checkbox-group">
-                    <label>
-                        <input type="checkbox" id="rememberMe">
-                        <span>Remember me</span>
-                    </label>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="rememberMe">
+                    <label for="rememberMe">Remember me</label>
                 </div>
 
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-primary btn-lg mt-4">
                     Sign In
                 </button>
 
-                <p class="text-center mt-4">
+                <p class="text-center mt-4 text-sm">
                     <a href="#" id="forgotPassword">Forgot password?</a>
                 </p>
 
-                <p class="text-center mt-2">
-                    New to MediVault? 
-                    <a href="#" onclick="showSignup()">Create an account</a>
+                <p class="text-center mt-2 text-sm">
+                    Don't have an account? <a href="#" id="showSignup">Register here</a>
                 </p>
             </form>
         </div>
     </section>
 
-    <!-- ============================================================================ -->
     <!-- DASHBOARD SECTION -->
-    <!-- ============================================================================ -->
     <section id="dashboardSection" class="dashboard-section hidden">
-        <!-- Dashboard Header -->
         <header class="dashboard-header">
             <div class="header-content">
                 <div class="hospital-info">
                     <h1 id="dashboardHospitalName">Hospital Name</h1>
-                    <p id="dashboardHospitalId">ID: HOSP-001</p>
+                    <p id="dashboardHospitalId">ID: HOSPITAL-ID</p>
                 </div>
                 <div class="header-actions">
-                    <button class="btn btn-secondary" onclick="switchView('dashboard')">
-                        📊 Dashboard
-                    </button>
-                    <button class="btn btn-primary" onclick="switchView('addRecord')">
-                        ➕ Add Record
-                    </button>
-                    <button class="btn btn-secondary" onclick="switchView('records')">
-                        📋 View Records
-                    </button>
-                    <button class="btn btn-danger" id="logoutBtn">
-                        🚪 Logout
-                    </button>
+                    <button id="showDashboardView" class="btn btn-secondary">Dashboard</button>
+                    <button id="showAddRecordView" class="btn btn-primary">Add Record</button>
+                    <button id="logoutBtn" class="btn btn-danger">Logout</button>
                 </div>
             </div>
         </header>
 
-        <!-- Dashboard Content -->
         <div class="dashboard-content">
-            <!-- ============== DASHBOARD HOME VIEW ============== -->
-            <div id="dashboardHome" class="dashboard-view">
-                <!-- Stats Cards -->
+            <!-- Dashboard View -->
+            <div id="dashboardView" class="dashboard-view">
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon">📋</div>
@@ -210,7 +174,6 @@
                             <p>Total Medical Records</p>
                         </div>
                     </div>
-
                     <div class="stat-card">
                         <div class="stat-icon">✅</div>
                         <div class="stat-details">
@@ -218,7 +181,6 @@
                             <p>Active Records</p>
                         </div>
                     </div>
-
                     <div class="stat-card">
                         <div class="stat-icon">👥</div>
                         <div class="stat-details">
@@ -228,67 +190,178 @@
                     </div>
                 </div>
 
-                <!-- Recent Activity -->
-                <div class="recent-activity">
-                    <h2>Recent Activity</h2>
-                    <div id="recentActivityList">
-                        <p class="text-center text-muted">Recent activities will appear here</p>
+                <div class="records-section">
+                    <h2>📁 Recent Medical Records</h2>
+                    <div id="recordsList" class="records-list">
+                        <div class="empty-state">
+                            <p>Medical records will appear here once created</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ============== ADD RECORD VIEW ============== -->
+            <!-- Add Record View -->
             <div id="addRecordView" class="add-record-view hidden">
-                <h2>Add New Medical Record</h2>
+                <!-- Patient Verification Card -->
+                <div class="verification-card">
+                    <h3>🔍 Patient Verification</h3>
+                    <p class="text-sm" style="color: var(--gray-500); margin-bottom: 1.5rem;">
+                        Enter patient details to verify and add medical record
+                    </p>
 
-                <!-- CORRECTED: Patient Verification Section - Name Field Removed -->
-                <div id="patientVerificationSection" class="form-section">
-                    <h3>Verify Patient</h3>
-                    <p class="help-text">Enter patient details to verify and add medical record</p>
-                    
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="patientId">Patient ID (ABHA/Aadhaar) *</label>
-                            <input type="text" 
-                                   id="patientId" 
-                                   placeholder="Enter 12-digit Patient ID" 
-                                   maxlength="12" 
-                                   pattern="\d{12}" 
-                                   required />
-                            <small>Must be exactly 12 digits</small>
+                            <label for="patientId">Patient ABHA Number</label>
+                            <input type="text" id="patientId" placeholder="14-digit ABHA" maxlength="14" pattern="[0-9]{14}">
+                            <small>Enter 14-digit ABHA number</small>
                         </div>
-                        
                         <div class="form-group">
-                            <label for="patientPhone">Phone Number *</label>
-                            <input type="tel" 
-                                   id="patientPhone" 
-                                   placeholder="Enter 10-digit phone" 
-                                   maxlength="10" 
-                                   pattern="\d{10}" 
-                                   required />
-                            <small>Must be exactly 10 digits</small>
+                            <label for="patientPhone">Phone Number</label>
+                            <input type="tel" id="patientPhone" placeholder="10-digit mobile" maxlength="10" pattern="[0-9]{10}">
+                            <small>Enter 10-digit mobile number</small>
                         </div>
-                    </div>
-
-                    <!-- CORRECTED: Removed patientName field completely -->
-
-                    <div id="verificationStatus" class="verification-status">
-                        ⚠ Patient Not Verified
-                    </div>
-
-                    <div id="patientInfo" class="patient-info">
-                        <p>Enter Patient ID and Phone Number to verify</p>
                     </div>
 
                     <button type="button" id="verifyPatientBtn" class="btn btn-primary">
                         Verify Patient
                     </button>
+
+                    <div id="verificationStatus" class="verification-status">
+                        ⚠️ Patient Not Verified
+                    </div>
+
+                    <div id="patientInfo" class="patient-info hidden">
+                        <div class="patient-details">
+                            <h4>Patient Information</h4>
+                            <p>Enter ABHA Number and Phone to verify</p>
+                        </div>
+                    </div>
+
+                    <div id="newPatientPrompt" class="new-patient-prompt hidden">
+                        <p style="text-align: center; margin: 1rem 0; color: var(--gray-600); font-weight: 600;">
+                            Patient not found in system
+                        </p>
+                        <button type="button" id="registerNewPatientBtn" class="btn btn-secondary">
+                            Register New Patient
+                        </button>
+                    </div>
+                </div>
+
+                <!-- New Patient Registration Form -->
+                <div id="newPatientForm" class="record-form-section hidden">
+                    <h3>➕ Register New Patient</h3>
+                    <form id="patientRegistrationForm">
+                        <div class="form-section">
+                            <h3>Personal Information</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="newPatientName">Full Name *</label>
+                                    <input type="text" id="newPatientName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="newPatientDOB">Date of Birth *</label>
+                                    <input type="date" id="newPatientDOB" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="newPatientGender">Gender *</label>
+                                    <select id="newPatientGender" required>
+                                        <option value="">Select Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="newPatientBloodGroup">Blood Group</label>
+                                    <select id="newPatientBloodGroup">
+                                        <option value="">Select Blood Group</option>
+                                        <option value="A+">A+</option>
+                                        <option value="A-">A-</option>
+                                        <option value="B+">B+</option>
+                                        <option value="B-">B-</option>
+                                        <option value="AB+">AB+</option>
+                                        <option value="AB-">AB-</option>
+                                        <option value="O+">O+</option>
+                                        <option value="O-">O-</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Contact Information</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="newPatientPhone">Phone Number *</label>
+                                    <input type="tel" id="newPatientPhone" readonly>
+                                    <small>From verification above</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="newPatientEmail">Email</label>
+                                    <input type="email" id="newPatientEmail" placeholder="patient@email.com">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="newPatientAddress">Address</label>
+                                <input type="text" id="newPatientAddress" placeholder="Street address">
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="newPatientCity">City</label>
+                                    <input type="text" id="newPatientCity">
+                                </div>
+                                <div class="form-group">
+                                    <label for="newPatientState">State</label>
+                                    <input type="text" id="newPatientState">
+                                </div>
+                                <div class="form-group">
+                                    <label for="newPatientPincode">Pincode</label>
+                                    <input type="text" id="newPatientPincode" pattern="[0-9]{6}" maxlength="6">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Emergency Contact</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="emergencyContactName">Contact Name</label>
+                                    <input type="text" id="emergencyContactName">
+                                </div>
+                                <div class="form-group">
+                                    <label for="emergencyContactPhone">Contact Phone</label>
+                                    <div class="phone-input-group">
+                                        <select id="emergencyCountryCode" class="country-code-select">
+                                            <option value="+91" selected>🇮🇳 +91</option>
+                                            <option value="+1">🇺🇸 +1</option>
+                                            <option value="+44">🇬🇧 +44</option>
+                                        </select>
+                                        <input type="tel" id="emergencyContactPhone" placeholder="9876543210" maxlength="10">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="emergencyContactRelation">Relation</label>
+                                    <input type="text" id="emergencyContactRelation" placeholder="e.g., Spouse">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" id="cancelNewPatient" class="btn btn-secondary">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Register Patient</button>
+                        </div>
+                    </form>
                 </div>
 
                 <!-- Medical Record Form -->
                 <div id="recordFormSection" class="record-form-section hidden">
+                    <h3>📝 Add Medical Record</h3>
                     <form id="addRecordForm">
-                        <!-- Visit Information -->
                         <div class="form-section">
                             <h3>Visit Information</h3>
                             <div class="form-row">
@@ -296,142 +369,179 @@
                                     <label for="visitDate">Visit Date *</label>
                                     <input type="date" id="visitDate" required>
                                 </div>
-
                                 <div class="form-group">
-                                    <label for="department">Department *</label>
-                                    <select id="department" required>
-                                        <option value="">Select Department</option>
-                                        <option value="General Medicine">General Medicine</option>
-                                        <option value="Cardiology">Cardiology</option>
-                                        <option value="Neurology">Neurology</option>
-                                        <option value="Orthopedics">Orthopedics</option>
-                                        <option value="Pediatrics">Pediatrics</option>
-                                        <option value="Gynecology">Gynecology</option>
-                                        <option value="Dermatology">Dermatology</option>
-                                        <option value="ENT">ENT</option>
-                                        <option value="Ophthalmology">Ophthalmology</option>
+                                    <label for="visitTime">Visit Time</label>
+                                    <input type="time" id="visitTime">
+                                </div>
+                                <div class="form-group">
+                                    <label for="visitType">Visit Type *</label>
+                                    <select id="visitType" required>
+                                        <option value="">Select Type</option>
+                                        <option value="OPD">OPD</option>
+                                        <option value="IPD">IPD</option>
                                         <option value="Emergency">Emergency</option>
+                                        <option value="Follow-up">Follow-up</option>
+                                        <option value="Telemedicine">Telemedicine</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Doctor Information -->
                         <div class="form-section">
                             <h3>Doctor Information</h3>
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="doctorName">Doctor Name *</label>
-                                    <input type="text" id="doctorName" 
-                                           placeholder="Dr. Full Name" required>
+                                    <input type="text" id="doctorName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="doctorRegistration">Registration Number *</label>
+                                    <input type="text" id="doctorRegistration" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="doctorQualification">Qualification *</label>
+                                    <input type="text" id="doctorQualification" placeholder="MBBS, MD" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="doctorSpecialization">Specialization</label>
+                                    <input type="text" id="doctorSpecialization" placeholder="e.g., Cardiology">
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Clinical Information -->
                         <div class="form-section">
                             <h3>Clinical Information</h3>
-                            
                             <div class="form-group">
                                 <label for="chiefComplaint">Chief Complaint *</label>
-                                <textarea id="chiefComplaint" rows="3" 
-                                          placeholder="Patient's main complaint" required></textarea>
+                                <textarea id="chiefComplaint" rows="3" required></textarea>
                             </div>
-
                             <div class="form-group">
-                                <label for="vitalSigns">Vital Signs</label>
-                                <textarea id="vitalSigns" rows="2" 
-                                          placeholder="BP, Temp, Pulse, SpO2, etc."></textarea>
+                                <label for="complaintDuration">Complaint Duration</label>
+                                <input type="text" id="complaintDuration" placeholder="e.g., 3 days">
                             </div>
-
                             <div class="form-group">
-                                <label for="provisionalDiagnosis">Provisional Diagnosis *</label>
-                                <textarea id="provisionalDiagnosis" rows="3" 
-                                          placeholder="Provisional diagnosis" required></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="finalDiagnosis">Final Diagnosis</label>
-                                <textarea id="finalDiagnosis" rows="3" 
-                                          placeholder="Final diagnosis (if confirmed)"></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="treatmentPlan">Treatment Plan *</label>
-                                <textarea id="treatmentPlan" rows="4" 
-                                          placeholder="Detailed treatment plan" required></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="medications">Medications Prescribed</label>
-                                <textarea id="medications" rows="4" 
-                                          placeholder="List medications with dosage and duration"></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="labTests">Lab Tests Ordered</label>
-                                <textarea id="labTests" rows="3" 
-                                          placeholder="List any lab tests or imaging ordered"></textarea>
+                                <label for="presentIllness">History of Present Illness</label>
+                                <textarea id="presentIllness" rows="3"></textarea>
                             </div>
                         </div>
 
-                        <!-- Follow-up Information -->
                         <div class="form-section">
-                            <h3>Follow-up & Additional Notes</h3>
-                            
+                            <h3>Vital Signs</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="bloodPressure">Blood Pressure</label>
+                                    <input type="text" id="bloodPressure" placeholder="120/80">
+                                </div>
+                                <div class="form-group">
+                                    <label for="pulse">Pulse Rate</label>
+                                    <input type="text" id="pulse" placeholder="72 bpm">
+                                </div>
+                                <div class="form-group">
+                                    <label for="temperature">Temperature</label>
+                                    <input type="text" id="temperature" placeholder="98.6°F">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="respiratoryRate">Respiratory Rate</label>
+                                    <input type="text" id="respiratoryRate" placeholder="16/min">
+                                </div>
+                                <div class="form-group">
+                                    <label for="spo2">SpO2</label>
+                                    <input type="text" id="spo2" placeholder="98%">
+                                </div>
+                                <div class="form-group">
+                                    <label for="weight">Weight (kg)</label>
+                                    <input type="number" id="weight" step="0.1">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Diagnosis</h3>
+                            <div class="form-group">
+                                <label for="clinicalExamination">Clinical Examination</label>
+                                <textarea id="clinicalExamination" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="provisionalDiagnosis">Provisional Diagnosis *</label>
+                                <textarea id="provisionalDiagnosis" rows="2" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="finalDiagnosis">Final Diagnosis</label>
+                                <textarea id="finalDiagnosis" rows="2"></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="icd10Code">ICD-10 Code</label>
+                                    <input type="text" id="icd10Code" placeholder="e.g., A90">
+                                </div>
+                                <div class="form-group">
+                                    <label for="severity">Severity</label>
+                                    <select id="severity">
+                                        <option value="Low">Low</option>
+                                        <option value="Medium" selected>Medium</option>
+                                        <option value="High">High</option>
+                                        <option value="Critical">Critical</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Treatment Plan</h3>
+                            <div class="form-group">
+                                <label for="treatmentPlan">Treatment Plan</label>
+                                <textarea id="treatmentPlan" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="medicationsPrescribed">Medications Prescribed</label>
+                                <textarea id="medicationsPrescribed" rows="3" placeholder="Medication, dosage, frequency"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="investigationsOrdered">Investigations Ordered</label>
+                                <textarea id="investigationsOrdered" rows="2"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Follow-up Instructions</h3>
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="followUpDate">Follow-up Date</label>
                                     <input type="date" id="followUpDate">
                                 </div>
-
-                                <div class="form-group">
-                                    <label for="followUpInstructions">Follow-up Instructions</label>
-                                    <input type="text" id="followUpInstructions" 
-                                           placeholder="Instructions for follow-up visit">
-                                </div>
                             </div>
+                            <div class="form-group">
+                                <label for="followUpInstructions">Follow-up Instructions</label>
+                                <textarea id="followUpInstructions" rows="2"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="lifestyleAdvice">Lifestyle & Dietary Advice</label>
+                                <textarea id="lifestyleAdvice" rows="2"></textarea>
+                            </div>
+                        </div>
 
+                        <div class="form-section">
+                            <h3>Additional Information</h3>
                             <div class="form-group">
                                 <label for="additionalNotes">Additional Notes</label>
-                                <textarea id="additionalNotes" rows="3" 
-                                          placeholder="Any additional notes or observations"></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="attachments">Attachments</label>
-                                <input type="file" id="attachments" multiple 
-                                       accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
-                                <small>Upload relevant documents (PDF, Images, Word docs)</small>
-                                <div id="selectedFiles" class="selected-files"></div>
+                                <textarea id="additionalNotes" rows="3"></textarea>
                             </div>
                         </div>
 
-                        <!-- Submit Button -->
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                💾 Add Medical Record
-                            </button>
-                            <button type="button" class="btn btn-secondary btn-lg" 
-                                    onclick="switchView('dashboard')">
-                                ❌ Cancel
-                            </button>
+                            <button type="button" id="cancelRecord" class="btn btn-secondary">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Medical Record</button>
                         </div>
                     </form>
-                </div>
-            </div>
-
-            <!-- ============== VIEW RECORDS VIEW ============== -->
-            <div id="recordsView" class="records-view hidden">
-                <h2>Medical Records</h2>
-                <div id="recordsList" class="records-list">
-                    <p class="text-center text-muted">Medical records will appear here once created</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Application Script -->
     <script src="app.js"></script>
 </body>
 </html>
