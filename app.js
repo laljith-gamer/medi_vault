@@ -1,6 +1,6 @@
-
 const SUPABASE_URL = "https://ebqyefcjvrfhpmqkuaud.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVicXllZmNqdnJmaHBtcWt1YXVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzU1MzUsImV4cCI6MjA3NjAxMTUzNX0.PP5OqeeWFKAlclm6aFPEKv7s3NeExjuO5fLp2VEikOo";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVicXllZmNqdnJmaHBtcWt1YXVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzU1MzUsImV4cCI6MjA3NjAxMTUzNX0.PP5OqeeWFKAlclm6aFPEKv7s3NeExjuO5fLp2VEikOo";
 
 // Validate credentials on load
 if (
@@ -21,7 +21,6 @@ let isSupabaseInitialized = false;
 async function checkNetworkConnectivity() {
   console.log("🔍 Running network diagnostics...");
 
-  // Test 1: Internet connection
   try {
     await fetch("https://www.google.com/generate_204", {
       mode: "no-cors",
@@ -34,7 +33,6 @@ async function checkNetworkConnectivity() {
     return false;
   }
 
-  // Test 2: Supabase URL format
   try {
     new URL(SUPABASE_URL);
     console.log("✅ Supabase URL format: Valid");
@@ -44,7 +42,6 @@ async function checkNetworkConnectivity() {
     return false;
   }
 
-  // Test 3: Supabase API accessibility
   try {
     const response = await fetch(SUPABASE_URL + "/rest/v1/", {
       method: "HEAD",
@@ -70,7 +67,6 @@ async function checkNetworkConnectivity() {
 // ============================================================================
 function initializeSupabase() {
   try {
-    // Validation checks
     if (!SUPABASE_URL || !SUPABASE_URL.startsWith("https://")) {
       throw new Error("Invalid Supabase URL. Must start with https://");
     }
@@ -154,20 +150,17 @@ class MediSecureApp {
     console.log("🚀 Initializing MediSecure App...");
     showConnectionStatus("Initializing application...", "info", 0);
 
-    // Check network first
     const networkOk = await checkNetworkConnectivity();
     if (!networkOk) {
       this.handleConnectionError();
       return;
     }
 
-    // Initialize Supabase
     if (!initializeSupabase()) {
       this.handleConnectionError();
       return;
     }
 
-    // Test database connection
     const connectionSuccess = await this.testDatabaseConnection();
     if (!connectionSuccess) {
       this.handleConnectionError();
@@ -176,6 +169,7 @@ class MediSecureApp {
 
     this.initializeEventListeners();
     await this.checkExistingSession();
+
     showConnectionStatus("Application ready!", "success");
     hideLoadingScreen();
     console.log("✅ MediSecure App initialized successfully");
@@ -336,27 +330,44 @@ class MediSecureApp {
         this.handleForgotPassword(e)
       );
 
-    // Dashboard
-    const verifyPatientBtn = document.getElementById("verifyPatientBtn");
-    const addRecordForm = document.getElementById("addRecordForm");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const attachmentsInput = document.getElementById("attachments");
+    // Navigation links
+    const showLogin = document.getElementById("showLogin");
+    const showSignup = document.getElementById("showSignup");
 
-    if (verifyPatientBtn)
-      verifyPatientBtn.addEventListener("click", () => this.verifyPatient());
-    if (addRecordForm)
-      addRecordForm.addEventListener("submit", (e) => this.handleAddRecord(e));
+    if (showLogin)
+      showLogin.addEventListener("click", (e) => {
+        e.preventDefault();
+        this.showLogin();
+      });
+    if (showSignup)
+      showSignup.addEventListener("click", (e) => {
+        e.preventDefault();
+        this.showSignup();
+      });
+
+    // Dashboard navigation
+    const showDashboardView = document.getElementById("showDashboardView");
+    const showAddRecordView = document.getElementById("showAddRecordView");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    if (showDashboardView)
+      showDashboardView.addEventListener("click", () =>
+        this.switchDashboardView("dashboard")
+      );
+    if (showAddRecordView)
+      showAddRecordView.addEventListener("click", () =>
+        this.switchDashboardView("addRecord")
+      );
     if (logoutBtn)
       logoutBtn.addEventListener("click", () => this.handleLogout());
-    if (attachmentsInput)
-      attachmentsInput.addEventListener("change", (e) =>
-        this.handleFileSelection(e)
-      );
 
-    // Auto-verify patient - CORRECTED: Removed patientName
+    // Patient verification
+    const verifyPatientBtn = document.getElementById("verifyPatientBtn");
     const patientIdInput = document.getElementById("patientId");
     const patientPhoneInput = document.getElementById("patientPhone");
 
+    if (verifyPatientBtn)
+      verifyPatientBtn.addEventListener("click", () => this.verifyPatient());
     if (patientIdInput)
       patientIdInput.addEventListener("input", () => this.autoVerifyPatient());
     if (patientPhoneInput)
@@ -364,14 +375,82 @@ class MediSecureApp {
         this.autoVerifyPatient()
       );
 
-    // Set minimum date for follow-up
+    // Patient registration buttons
+    const registerNewPatientBtn = document.getElementById(
+      "registerNewPatientBtn"
+    );
+    const cancelNewPatient = document.getElementById("cancelNewPatient");
+    const patientRegistrationForm = document.getElementById(
+      "patientRegistrationForm"
+    );
+
+    if (registerNewPatientBtn)
+      registerNewPatientBtn.addEventListener("click", () =>
+        this.showNewPatientForm()
+      );
+    if (cancelNewPatient)
+      cancelNewPatient.addEventListener("click", () =>
+        this.hideNewPatientForm()
+      );
+    if (patientRegistrationForm)
+      patientRegistrationForm.addEventListener("submit", (e) =>
+        this.handleNewPatientRegistration(e)
+      );
+
+    // Medical record form
+    const addRecordForm = document.getElementById("addRecordForm");
+    const cancelRecord = document.getElementById("cancelRecord");
+
+    if (addRecordForm)
+      addRecordForm.addEventListener("submit", (e) => this.handleAddRecord(e));
+    if (cancelRecord)
+      cancelRecord.addEventListener("click", () => this.resetAddRecordView());
+
+    // Set today's date
+    const visitDate = document.getElementById("visitDate");
     const followUpDate = document.getElementById("followUpDate");
-    if (followUpDate) {
-      followUpDate.min = new Date().toISOString().split("T")[0];
+    const today = new Date().toISOString().split("T")[0];
+
+    if (visitDate) {
+      visitDate.value = today;
+      visitDate.max = today;
     }
+    if (followUpDate) {
+      followUpDate.min = today;
+    }
+
+    // Set current time
+    const visitTime = document.getElementById("visitTime");
+    if (visitTime) {
+      const now = new Date();
+      visitTime.value = now.toTimeString().slice(0, 5);
+    }
+
+    // Phone number validation - numbers only
+    this.setupPhoneValidation();
   }
 
-  // Navigation Methods
+  setupPhoneValidation() {
+    const phoneInputs = [
+      "contactPhone",
+      "patientPhone",
+      "emergencyContactPhone",
+    ];
+
+    phoneInputs.forEach((inputId) => {
+      const input = document.getElementById(inputId);
+      if (input) {
+        input.addEventListener("input", (e) => {
+          e.target.value = e.target.value.replace(/[^0-9]/g, "");
+        });
+      }
+    });
+  }
+
+  // ========================================================================
+  // NAVIGATION METHODS
+  // ========================================================================
+
   showSignup() {
     this.hideAllSections();
     const signupSection = document.getElementById("signupSection");
@@ -397,14 +476,16 @@ class MediSecureApp {
     if (this.currentSession) {
       const hospitalName = document.getElementById("dashboardHospitalName");
       const hospitalId = document.getElementById("dashboardHospitalId");
+
       if (hospitalName)
         hospitalName.textContent = this.currentSession.hospitalName;
       if (hospitalId)
         hospitalId.textContent = `ID: ${this.currentSession.hospitalId}`;
+
       await this.loadDashboardStats();
+      await this.loadMedicalRecords();
     }
 
-    this.resetForms();
     this.switchDashboardView("dashboard");
   }
 
@@ -416,7 +497,53 @@ class MediSecureApp {
     });
   }
 
-  // Hospital Verification and Signup
+  switchDashboardView(view) {
+    const dashboardView = document.getElementById("dashboardView");
+    const addRecordView = document.getElementById("addRecordView");
+
+    if (view === "dashboard") {
+      if (dashboardView) dashboardView.classList.remove("hidden");
+      if (addRecordView) addRecordView.classList.add("hidden");
+      this.loadMedicalRecords();
+    } else if (view === "addRecord") {
+      if (dashboardView) dashboardView.classList.add("hidden");
+      if (addRecordView) addRecordView.classList.remove("hidden");
+      this.resetAddRecordView();
+    }
+
+    this.currentDashboardView = view;
+  }
+
+  resetForms() {
+    const forms = document.querySelectorAll("form");
+    forms.forEach((form) => form.reset());
+  }
+
+  resetAddRecordView() {
+    this.verifiedPatient = null;
+    this.updatePatientVerificationUI(false);
+
+    const recordFormSection = document.getElementById("recordFormSection");
+    const newPatientForm = document.getElementById("newPatientForm");
+    const newPatientPrompt = document.getElementById("newPatientPrompt");
+
+    if (recordFormSection) recordFormSection.classList.add("hidden");
+    if (newPatientForm) newPatientForm.classList.add("hidden");
+    if (newPatientPrompt) newPatientPrompt.classList.add("hidden");
+
+    const addRecordForm = document.getElementById("addRecordForm");
+    if (addRecordForm) addRecordForm.reset();
+
+    const patientId = document.getElementById("patientId");
+    const patientPhone = document.getElementById("patientPhone");
+    if (patientId) patientId.value = "";
+    if (patientPhone) patientPhone.value = "";
+  }
+
+  // ========================================================================
+  // HOSPITAL VERIFICATION AND SIGNUP
+  // ========================================================================
+
   async verifyHospital() {
     if (!this.checkDatabaseAvailability()) return;
 
@@ -464,6 +591,7 @@ class MediSecureApp {
 
       const verificationStep = document.getElementById("verificationStep");
       const registrationStep = document.getElementById("registrationStep");
+
       if (verificationStep) verificationStep.classList.add("hidden");
       if (registrationStep) registrationStep.classList.remove("hidden");
 
@@ -481,10 +609,39 @@ class MediSecureApp {
     e.preventDefault();
     if (!this.checkDatabaseAvailability()) return;
 
-    const password = document.getElementById("password").value;
-    const confirmPassword = document.getElementById("confirmPassword").value;
-    const adminEmail = document.getElementById("adminEmail").value;
-    const contactPhone = document.getElementById("contactPhone").value;
+    const passwordInput = document.getElementById("password");
+    const confirmPasswordInput = document.getElementById("confirmPassword");
+    const adminEmailInput = document.getElementById("adminEmail");
+    const countryCodeInput = document.getElementById("countryCode");
+    const contactPhoneInput = document.getElementById("contactPhone");
+
+    // Check if all required elements exist
+    if (
+      !passwordInput ||
+      !confirmPasswordInput ||
+      !adminEmailInput ||
+      !countryCodeInput ||
+      !contactPhoneInput
+    ) {
+      console.error("Form elements not found:", {
+        password: !!passwordInput,
+        confirmPassword: !!confirmPasswordInput,
+        adminEmail: !!adminEmailInput,
+        countryCode: !!countryCodeInput,
+        contactPhone: !!contactPhoneInput,
+      });
+      this.showNotification(
+        "Form initialization error. Please refresh the page.",
+        "error"
+      );
+      return;
+    }
+
+    const password = passwordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
+    const adminEmail = adminEmailInput.value;
+    const countryCode = countryCodeInput.value;
+    const contactPhone = contactPhoneInput.value;
 
     if (password !== confirmPassword) {
       this.showNotification("Passwords do not match!", "error");
@@ -496,6 +653,18 @@ class MediSecureApp {
       return;
     }
 
+    // Validate phone number (should be 10 digits)
+    if (!/^\d{10}$/.test(contactPhone)) {
+      this.showNotification(
+        "Please enter a valid 10-digit phone number",
+        "error"
+      );
+      return;
+    }
+
+    // Combine country code with phone number
+    const fullPhone = countryCode + contactPhone;
+
     try {
       const passwordHash = await this.hashPassword(password);
 
@@ -504,7 +673,7 @@ class MediSecureApp {
         .update({
           password_hash: passwordHash,
           admin_email: adminEmail,
-          contact_phone: contactPhone,
+          contact_phone: fullPhone,
           is_verified: true,
         })
         .eq("hospital_id", this.hospitalData.hospital_id);
@@ -522,13 +691,25 @@ class MediSecureApp {
     }
   }
 
+  // ========================================================================
+  // LOGIN
+  // ========================================================================
+
   async handleLogin(e) {
     e.preventDefault();
     if (!this.checkDatabaseAvailability()) return;
 
-    const hospitalId = document.getElementById("loginHospitalId").value;
+    const hospitalId = document.getElementById("loginHospitalId").value.trim();
     const password = document.getElementById("loginPassword").value;
     const rememberMe = document.getElementById("rememberMe").checked;
+
+    if (!hospitalId || !password) {
+      this.showNotification(
+        "Please enter both Hospital ID and Password",
+        "error"
+      );
+      return;
+    }
 
     try {
       const { data, error } = await supabase
@@ -572,62 +753,80 @@ class MediSecureApp {
     }
   }
 
-  // Patient Verification - CORRECTED VERSION
+  handleLogout() {
+    localStorage.removeItem("hospitalSession");
+    sessionStorage.removeItem("hospitalSession");
+    this.currentSession = null;
+    this.hospitalData = null;
+    this.verifiedPatient = null;
+    this.showNotification("Logged out successfully", "success");
+    this.showLogin();
+  }
+
+  handleForgotPassword(e) {
+    e.preventDefault();
+    this.showNotification(
+      "Please contact your hospital administrator for password reset",
+      "info"
+    );
+  }
+
+  // ========================================================================
+  // PATIENT VERIFICATION
+  // ========================================================================
+
   async verifyPatient() {
     if (!this.checkDatabaseAvailability()) return;
 
     const patientId = document.getElementById("patientId").value.trim();
     const patientPhone = document.getElementById("patientPhone").value.trim();
 
-    // CORRECTED: Only validate Patient ID and Phone (removed name)
     if (!patientId || !patientPhone) {
       this.showNotification(
-        "Please enter both Patient ID and Phone Number",
+        "Please enter both ABHA Number and Phone Number",
         "error"
       );
       return;
     }
 
-    // Validate Patient ID format (should be exactly 12 digits)
-    if (!/^\d{12}$/.test(patientId)) {
-      this.showNotification(
-        "Patient ID must be exactly 12 digits",
-        "error"
-      );
+    if (!/^\d{14}$/.test(patientId)) {
+      this.showNotification("ABHA Number must be exactly 14 digits", "error");
       return;
     }
 
-    // Validate Phone format (should be 10 digits)
     if (!/^\d{10}$/.test(patientPhone)) {
-      this.showNotification(
-        "Phone number must be exactly 10 digits",
-        "error"
-      );
+      this.showNotification("Phone number must be exactly 10 digits", "error");
       return;
     }
 
     try {
-      // CORRECTED: Query without name field - exact matches only
       const { data, error } = await supabase
         .from("patients")
         .select("*")
-        .eq("patient_id", patientId)
-        .eq("phone", patientPhone)
+        .eq("abha_number", patientId)
+        .eq("phone", `+91${patientPhone}`)
         .single();
 
       if (error || !data) {
-        this.showNotification(
-          "Patient not found. Please verify Patient ID and Phone Number.",
-          "error"
-        );
+        this.showNotification("Patient not found in system", "warning");
         this.verifiedPatient = null;
         this.updatePatientVerificationUI(false);
+
+        const newPatientPrompt = document.getElementById("newPatientPrompt");
+        if (newPatientPrompt) newPatientPrompt.classList.remove("hidden");
+
+        const recordFormSection = document.getElementById("recordFormSection");
+        if (recordFormSection) recordFormSection.classList.add("hidden");
+
         return;
       }
 
       this.verifiedPatient = data;
       this.showNotification("Patient verified successfully!", "success");
       this.updatePatientVerificationUI(true, data);
+
+      const newPatientPrompt = document.getElementById("newPatientPrompt");
+      if (newPatientPrompt) newPatientPrompt.classList.add("hidden");
 
       const recordFormSection = document.getElementById("recordFormSection");
       if (recordFormSection) recordFormSection.classList.remove("hidden");
@@ -637,27 +836,30 @@ class MediSecureApp {
     }
   }
 
-  // CORRECTED: Auto-verify without name field
   autoVerifyPatient() {
     clearTimeout(this.autoSearchTimeout);
-    
+
     const patientId = document.getElementById("patientId")?.value.trim();
     const patientPhone = document.getElementById("patientPhone")?.value.trim();
 
-    // CORRECTED: Only proceed if both ID and Phone are complete
-    // Patient ID should be 12 digits, Phone should be 10 digits
-    if (patientId && patientPhone && 
-        patientId.length === 12 && 
-        patientPhone.length === 10) {
+    if (
+      patientId &&
+      patientPhone &&
+      patientId.length === 14 &&
+      patientPhone.length === 10
+    ) {
       this.autoSearchTimeout = setTimeout(() => {
         this.verifyPatient();
       }, 1000);
     } else {
-      // Clear verification if incomplete
       this.verifiedPatient = null;
       this.updatePatientVerificationUI(false);
+
       const recordFormSection = document.getElementById("recordFormSection");
+      const newPatientPrompt = document.getElementById("newPatientPrompt");
+
       if (recordFormSection) recordFormSection.classList.add("hidden");
+      if (newPatientPrompt) newPatientPrompt.classList.add("hidden");
     }
   }
 
@@ -669,45 +871,161 @@ class MediSecureApp {
 
     if (isVerified && patientData) {
       verificationStatus.className = "verification-status success";
-      verificationStatus.innerHTML = `✓ Patient Verified`;
+      verificationStatus.innerHTML = `✅ Patient Verified`;
 
       const age = this.calculateAge(patientData.date_of_birth);
+
+      patientInfo.classList.remove("hidden");
       patientInfo.innerHTML = `
-        <p><strong>Name:</strong> ${patientData.name}</p>
-        <p><strong>ABHA:</strong> ${
-          patientData.abha_number || "Not provided"
-        }</p>
-        <p><strong>Age:</strong> ${age} years | <strong>Gender:</strong> ${
+                <div class="patient-details">
+                    <h4>Patient Information</h4>
+                    <p><strong>Name:</strong> ${patientData.name}</p>
+                    <p><strong>ABHA:</strong> ${
+                      patientData.abha_number || "Not provided"
+                    }</p>
+                    <p><strong>Age:</strong> ${age} years | <strong>Gender:</strong> ${
         patientData.gender
       }</p>
-        <p><strong>Blood Group:</strong> ${
-          patientData.blood_group || "N/A"
-        }</p>
-        <p><strong>Phone:</strong> ${patientData.phone}</p>
-      `;
+                    <p><strong>Blood Group:</strong> ${
+                      patientData.blood_group || "N/A"
+                    }</p>
+                    <p><strong>Phone:</strong> ${patientData.phone}</p>
+                </div>
+            `;
     } else {
-      verificationStatus.className = "verification-status";
-      verificationStatus.innerHTML = `⚠ Patient Not Verified`;
-      patientInfo.innerHTML = `<p>Enter Patient ID and Phone Number to verify</p>`;
+      verificationStatus.className = "verification-status error";
+      verificationStatus.innerHTML = `⚠️ Patient Not Verified`;
+
+      patientInfo.classList.add("hidden");
+      patientInfo.innerHTML = `
+                <div class="patient-details">
+                    <h4>Patient Information</h4>
+                    <p>Enter ABHA Number and Phone Number to verify</p>
+                </div>
+            `;
     }
   }
 
-  calculateAge(dateOfBirth) {
-    if (!dateOfBirth) return "N/A";
-    const today = new Date();
-    const birthDate = new Date(dateOfBirth);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (
-      monthDiff < 0 ||
-      (monthDiff === 0 && today.getDate() < birthDate.getDate())
-    ) {
-      age--;
+  // ========================================================================
+  // NEW PATIENT REGISTRATION
+  // ========================================================================
+
+  showNewPatientForm() {
+    const newPatientForm = document.getElementById("newPatientForm");
+    const newPatientPrompt = document.getElementById("newPatientPrompt");
+
+    if (newPatientForm) newPatientForm.classList.remove("hidden");
+    if (newPatientPrompt) newPatientPrompt.classList.add("hidden");
+
+    const verificationPhone = document
+      .getElementById("patientPhone")
+      .value.trim();
+    const newPatientPhone = document.getElementById("newPatientPhone");
+
+    if (newPatientPhone && verificationPhone) {
+      newPatientPhone.value = `+91${verificationPhone}`;
     }
-    return age;
+
+    newPatientForm?.scrollIntoView({ behavior: "smooth" });
   }
 
-  // Medical Record Management
+  hideNewPatientForm() {
+    const newPatientForm = document.getElementById("newPatientForm");
+    const newPatientPrompt = document.getElementById("newPatientPrompt");
+
+    if (newPatientForm) newPatientForm.classList.add("hidden");
+    if (newPatientPrompt) newPatientPrompt.classList.remove("hidden");
+
+    const patientRegistrationForm = document.getElementById(
+      "patientRegistrationForm"
+    );
+    if (patientRegistrationForm) patientRegistrationForm.reset();
+  }
+
+  async handleNewPatientRegistration(e) {
+    e.preventDefault();
+    if (!this.checkDatabaseAvailability()) return;
+
+    const patientId = this.generatePatientId();
+    const abhaNumber = document.getElementById("patientId").value.trim();
+    const phone = document.getElementById("newPatientPhone").value.trim();
+
+    const patientData = {
+      patient_id: patientId,
+      abha_number: abhaNumber,
+      name: document.getElementById("newPatientName").value.trim(),
+      phone: phone,
+      email: document.getElementById("newPatientEmail").value.trim() || null,
+      date_of_birth: document.getElementById("newPatientDOB").value,
+      gender: document.getElementById("newPatientGender").value,
+      blood_group:
+        document.getElementById("newPatientBloodGroup").value || null,
+      address_line1:
+        document.getElementById("newPatientAddress").value.trim() || null,
+      city: document.getElementById("newPatientCity").value.trim() || null,
+      state: document.getElementById("newPatientState").value.trim() || null,
+      pincode:
+        document.getElementById("newPatientPincode").value.trim() || null,
+      emergency_contact_name:
+        document.getElementById("emergencyContactName").value.trim() || null,
+      emergency_contact_phone: this.getFullPhoneNumber(
+        "emergencyCountryCode",
+        "emergencyContactPhone"
+      ),
+      emergency_contact_relation:
+        document.getElementById("emergencyContactRelation").value.trim() ||
+        null,
+      consent_data_sharing: true,
+      consent_date: new Date().toISOString(),
+      is_active: true,
+    };
+
+    try {
+      const { data, error } = await supabase
+        .from("patients")
+        .insert([patientData])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      this.showNotification("Patient registered successfully!", "success");
+
+      this.verifiedPatient = data;
+      this.updatePatientVerificationUI(true, data);
+
+      this.hideNewPatientForm();
+
+      const recordFormSection = document.getElementById("recordFormSection");
+      if (recordFormSection) recordFormSection.classList.remove("hidden");
+    } catch (error) {
+      console.error("Patient registration error:", error);
+      this.showNotification(
+        "Failed to register patient: " + error.message,
+        "error"
+      );
+    }
+  }
+
+  getFullPhoneNumber(countryCodeId, phoneId) {
+    const countryCode = document.getElementById(countryCodeId)?.value || "+91";
+    const phone = document.getElementById(phoneId)?.value.trim();
+    return phone ? countryCode + phone : null;
+  }
+
+  generatePatientId() {
+    const year = new Date().getFullYear();
+    const timestamp = Date.now().toString().slice(-6);
+    const random = Math.floor(Math.random() * 1000)
+      .toString()
+      .padStart(3, "0");
+    return `PAT-${year}-${timestamp}${random}`;
+  }
+
+  // ========================================================================
+  // MEDICAL RECORD MANAGEMENT
+  // ========================================================================
+
   async handleAddRecord(e) {
     e.preventDefault();
     if (!this.checkDatabaseAvailability()) return;
@@ -717,25 +1035,61 @@ class MediSecureApp {
       return;
     }
 
+    const recordNumber = this.generateRecordNumber();
+
+    const canEditUntil = new Date();
+    canEditUntil.setHours(canEditUntil.getHours() + 48);
+
+    const vitalSigns = {
+      bp: document.getElementById("bloodPressure")?.value || null,
+      pulse: document.getElementById("pulse")?.value || null,
+      temp: document.getElementById("temperature")?.value || null,
+      rr: document.getElementById("respiratoryRate")?.value || null,
+      spo2: document.getElementById("spo2")?.value || null,
+      weight: document.getElementById("weight")?.value || null,
+    };
+
     const recordData = {
+      record_number: recordNumber,
       patient_id: this.verifiedPatient.patient_id,
       hospital_id: this.currentSession.hospitalId,
       visit_date: document.getElementById("visitDate").value,
+      visit_time: document.getElementById("visitTime").value,
+      visit_type: document.getElementById("visitType").value,
+      record_type: "OPD Consultation",
       doctor_name: document.getElementById("doctorName").value,
-      department: document.getElementById("department").value,
+      doctor_registration_number:
+        document.getElementById("doctorRegistration").value,
+      doctor_qualification: document.getElementById("doctorQualification")
+        .value,
+      doctor_specialization:
+        document.getElementById("doctorSpecialization").value || null,
       chief_complaint: document.getElementById("chiefComplaint").value,
-      vital_signs: document.getElementById("vitalSigns").value,
+      complaint_duration:
+        document.getElementById("complaintDuration").value || null,
+      history_of_present_illness:
+        document.getElementById("presentIllness").value || null,
+      vital_signs: vitalSigns,
+      clinical_examination:
+        document.getElementById("clinicalExamination").value || null,
       provisional_diagnosis: document.getElementById("provisionalDiagnosis")
         .value,
-      final_diagnosis: document.getElementById("finalDiagnosis").value,
-      treatment_plan: document.getElementById("treatmentPlan").value,
-      medications_prescribed: document.getElementById("medications").value,
-      lab_tests: document.getElementById("labTests").value,
+      final_diagnosis: document.getElementById("finalDiagnosis").value || null,
+      icd10_code: document.getElementById("icd10Code").value || null,
+      severity: document.getElementById("severity").value || "Medium",
+      treatment_plan: document.getElementById("treatmentPlan").value || null,
+      medications:
+        document.getElementById("medicationsPrescribed").value || null,
+      investigations_ordered:
+        document.getElementById("investigationsOrdered").value || null,
       follow_up_date: document.getElementById("followUpDate").value || null,
-      follow_up_instructions: document.getElementById("followUpInstructions")
-        .value,
-      additional_notes: document.getElementById("additionalNotes").value,
-      record_status: "active",
+      follow_up_instructions:
+        document.getElementById("followUpInstructions").value || null,
+      lifestyle_modifications:
+        document.getElementById("lifestyleAdvice").value || null,
+      notes: document.getElementById("additionalNotes").value || null,
+      can_edit_until: canEditUntil.toISOString(),
+      is_editable: true,
     };
 
     try {
@@ -747,20 +1101,26 @@ class MediSecureApp {
       if (error) throw error;
 
       this.showNotification("Medical record added successfully!", "success");
-      document.getElementById("addRecordForm").reset();
-      this.verifiedPatient = null;
-      this.updatePatientVerificationUI(false);
-      document.getElementById("recordFormSection").classList.add("hidden");
+
+      this.resetAddRecordView();
       await this.loadDashboardStats();
-      this.switchDashboardView("records");
+      this.switchDashboardView("dashboard");
     } catch (error) {
       console.error("Error adding record:", error);
-      this.showNotification(
-        "Failed to add record: " + error.message,
-        "error"
-      );
+      this.showNotification("Failed to add record: " + error.message, "error");
     }
   }
+
+  generateRecordNumber() {
+    const hospitalId = this.currentSession.hospitalId.split("-")[0];
+    const year = new Date().getFullYear();
+    const timestamp = Date.now().toString().slice(-8);
+    return `REC-${hospitalId}-${year}-${timestamp}`;
+  }
+
+  // ========================================================================
+  // DASHBOARD STATS AND RECORDS
+  // ========================================================================
 
   async loadDashboardStats() {
     if (!this.checkDatabaseAvailability()) return;
@@ -774,14 +1134,11 @@ class MediSecureApp {
       if (error) throw error;
 
       const totalRecords = records.length;
-      const activeRecords = records.filter(
-        (r) => r.record_status === "active"
-      ).length;
+      const activeRecords = records.filter((r) => r.is_editable).length;
 
       document.getElementById("totalRecords").textContent = totalRecords;
       document.getElementById("activeRecords").textContent = activeRecords;
 
-      // Get unique patients
       const uniquePatients = new Set(records.map((r) => r.patient_id)).size;
       document.getElementById("totalPatients").textContent = uniquePatients;
     } catch (error) {
@@ -797,12 +1154,17 @@ class MediSecureApp {
         .from("medical_records")
         .select(
           `
-          *,
-          patients (name, abha_number)
-        `
+                    *,
+                    patients (
+                        name,
+                        abha_number,
+                        phone
+                    )
+                `
         )
         .eq("hospital_id", this.currentSession.hospitalId)
-        .order("visit_date", { ascending: false });
+        .order("visit_date", { ascending: false })
+        .limit(10);
 
       if (error) throw error;
 
@@ -811,112 +1173,81 @@ class MediSecureApp {
 
       if (records.length === 0) {
         recordsList.innerHTML = `
-          <div class="empty-state">
-            <p>No medical records found</p>
-            <p class="text-muted">Start by adding a new record</p>
-          </div>
-        `;
+                    <div class="empty-state">
+                        <p>No medical records found</p>
+                        <p style="font-size: 0.9rem; color: var(--gray-500);">Start by adding a new record</p>
+                    </div>
+                `;
         return;
       }
 
       recordsList.innerHTML = records
         .map(
           (record) => `
-        <div class="record-card">
-          <div class="record-header">
-            <h3>Record #${record.record_number}</h3>
-            <span class="record-status ${record.record_status}">${
-            record.record_status
+                <div class="record-card">
+                    <div class="record-header">
+                        <h4>${record.record_number}</h4>
+                        <span class="badge ${record.severity.toLowerCase()}">${
+            record.severity
           }</span>
-          </div>
-          <div class="record-body">
-            <p><strong>Patient:</strong> ${record.patients?.name || "N/A"}</p>
-            <p><strong>ABHA:</strong> ${
-              record.patients?.abha_number || "Not provided"
-            }</p>
-            <p><strong>Visit Date:</strong> ${new Date(
-              record.visit_date
-            ).toLocaleDateString()}</p>
-            <p><strong>Chief Complaint:</strong> ${record.chief_complaint}</p>
-            <p><strong>Diagnosis:</strong> ${
-              record.provisional_diagnosis || "N/A"
-            }</p>
-            <p><strong>Doctor:</strong> ${record.doctor_name}</p>
-          </div>
-          <div class="record-footer">
-            <button onclick="app.viewRecordDetails('${
-              record.record_id
-            }')" class="btn btn-secondary btn-sm">
-              View Details
-            </button>
-          </div>
-        </div>
-      `
+                    </div>
+                    <div class="record-details">
+                        <p><strong>Patient:</strong> ${
+                          record.patients?.name || "N/A"
+                        }</p>
+                        <p><strong>ABHA:</strong> ${
+                          record.patients?.abha_number || "Not provided"
+                        }</p>
+                        <p><strong>Visit Date:</strong> ${new Date(
+                          record.visit_date
+                        ).toLocaleDateString()}</p>
+                        <p><strong>Visit Type:</strong> ${record.visit_type}</p>
+                        <p><strong>Chief Complaint:</strong> ${
+                          record.chief_complaint
+                        }</p>
+                        <p><strong>Diagnosis:</strong> ${
+                          record.provisional_diagnosis || "N/A"
+                        }</p>
+                        <p><strong>Doctor:</strong> ${record.doctor_name}</p>
+                    </div>
+                </div>
+            `
         )
         .join("");
     } catch (error) {
       console.error("Error loading records:", error);
-      this.showNotification("Failed to load records", "error");
+      const recordsList = document.getElementById("recordsList");
+      if (recordsList) {
+        recordsList.innerHTML = `
+                    <div class="empty-state">
+                        <p style="color: var(--danger-color);">Error loading records</p>
+                    </div>
+                `;
+      }
     }
   }
 
-  async viewRecordDetails(recordId) {
-    // Implementation for viewing full record details
-    console.log("Viewing record:", recordId);
-    this.showNotification("View details feature coming soon", "info");
-  }
+  // ========================================================================
+  // UTILITY METHODS
+  // ========================================================================
 
-  switchDashboardView(view) {
-    this.currentDashboardView = view;
+  calculateAge(dateOfBirth) {
+    if (!dateOfBirth) return "N/A";
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
 
-    // Hide all views
-    const views = ["dashboardHome", "addRecordView", "recordsView"];
-    views.forEach((viewId) => {
-      const element = document.getElementById(viewId);
-      if (element) element.classList.add("hidden");
-    });
-
-    // Show selected view
-    const viewMap = {
-      dashboard: "dashboardHome",
-      addRecord: "addRecordView",
-      records: "recordsView",
-    };
-
-    const selectedView = document.getElementById(viewMap[view]);
-    if (selectedView) selectedView.classList.remove("hidden");
-
-    // Update nav buttons
-    document.querySelectorAll(".nav-btn").forEach((btn) => {
-      btn.classList.remove("active");
-    });
-    const activeBtn = document.querySelector(`[onclick*="${view}"]`);
-    if (activeBtn) activeBtn.classList.add("active");
-
-    // Load data if needed
-    if (view === "records") {
-      this.loadMedicalRecords();
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      age--;
     }
+
+    return age;
   }
 
-  handleFileSelection(e) {
-    const files = e.target.files;
-    const fileList = document.getElementById("selectedFiles");
-
-    if (fileList) {
-      fileList.innerHTML = "";
-      Array.from(files).forEach((file) => {
-        const fileItem = document.createElement("div");
-        fileItem.className = "file-item";
-        fileItem.textContent = `${file.name} (${(file.size / 1024).toFixed(
-          2
-        )} KB)`;
-        fileList.appendChild(fileItem);
-      });
-    }
-  }
-
-  // Utility Methods
   togglePasswordVisibility(inputId, buttonId) {
     const input = document.getElementById(inputId);
     const button = document.getElementById(buttonId);
@@ -934,138 +1265,95 @@ class MediSecureApp {
 
   checkPasswordStrength() {
     const password = document.getElementById("password").value;
-    const strengthBar = document.getElementById("passwordStrength");
+    const strengthDiv = document.getElementById("passwordStrength");
 
-    if (!strengthBar) return;
+    if (!strengthDiv) return;
 
     let strength = 0;
-    if (password.length >= 8) strength++;
-    if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
-    if (password.match(/[0-9]/)) strength++;
-    if (password.match(/[^a-zA-Z0-9]/)) strength++;
+    let feedback = "";
 
-    const strengthLevels = ["weak", "fair", "good", "strong"];
-    strengthBar.className = `password-strength ${strengthLevels[strength]}`;
+    if (password.length >= 8) strength++;
+    if (password.length >= 12) strength++;
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+    if (/\d/.test(password)) strength++;
+    if (/[^a-zA-Z\d]/.test(password)) strength++;
+
+    if (password.length === 0) {
+      strengthDiv.className = "password-strength";
+      strengthDiv.textContent = "";
+    } else if (strength <= 2) {
+      strengthDiv.className = "password-strength weak";
+      feedback = "Weak - Add uppercase, numbers, and symbols";
+    } else if (strength === 3) {
+      strengthDiv.className = "password-strength fair";
+      feedback = "Fair - Add more characters and symbols";
+    } else if (strength === 4) {
+      strengthDiv.className = "password-strength good";
+      feedback = "Good - Consider adding special characters";
+    } else {
+      strengthDiv.className = "password-strength strong";
+      feedback = "Strong - Excellent password!";
+    }
+
+    strengthDiv.textContent = feedback;
+  }
+
+  validatePasswordStrength(password) {
+    return (
+      password.length >= 8 &&
+      /[a-z]/.test(password) &&
+      /[A-Z]/.test(password) &&
+      /\d/.test(password)
+    );
   }
 
   validatePasswordMatch() {
     const password = document.getElementById("password").value;
     const confirmPassword = document.getElementById("confirmPassword").value;
-    const matchIndicator = document.getElementById("passwordMatch");
+    const matchDiv = document.getElementById("passwordMatch");
 
-    if (!matchIndicator) return;
-
-    if (confirmPassword === "") {
-      matchIndicator.textContent = "";
-      return;
-    }
+    if (!matchDiv || !confirmPassword) return;
 
     if (password === confirmPassword) {
-      matchIndicator.textContent = "✓ Passwords match";
-      matchIndicator.style.color = "#28a745";
+      matchDiv.style.color = "var(--success-color)";
+      matchDiv.textContent = "✓ Passwords match";
     } else {
-      matchIndicator.textContent = "✗ Passwords do not match";
-      matchIndicator.style.color = "#dc3545";
+      matchDiv.style.color = "var(--danger-color)";
+      matchDiv.textContent = "✗ Passwords do not match";
     }
-  }
-
-  validatePasswordStrength(password) {
-    const minLength = 8;
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNumbers = /\d/.test(password);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-
-    return (
-      password.length >= minLength &&
-      hasUpperCase &&
-      hasLowerCase &&
-      hasNumbers &&
-      hasSpecialChar
-    );
   }
 
   async hashPassword(password) {
     const encoder = new TextEncoder();
     const data = encoder.encode(password);
-    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+    const hash = await crypto.subtle.digest("SHA-256", data);
+    return Array.from(new Uint8Array(hash))
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
   }
 
-  async verifyPassword(password, hash) {
-    const passwordHash = await this.hashPassword(password);
-    return passwordHash === hash;
-  }
-
-  handleForgotPassword(e) {
-    e.preventDefault();
-    this.showNotification(
-      "Password reset feature coming soon. Contact admin.",
-      "info"
-    );
-  }
-
-  handleLogout() {
-    localStorage.removeItem("hospitalSession");
-    sessionStorage.removeItem("hospitalSession");
-    this.currentSession = null;
-    this.hospitalData = null;
-    this.verifiedPatient = null;
-    this.showNotification("Logged out successfully", "success");
-    this.showLogin();
-  }
-
-  resetForms() {
-    const forms = document.querySelectorAll("form");
-    forms.forEach((form) => form.reset());
-
-    // Reset verification UI
-    const verificationStep = document.getElementById("verificationStep");
-    const registrationStep = document.getElementById("registrationStep");
-    if (verificationStep) verificationStep.classList.remove("hidden");
-    if (registrationStep) registrationStep.classList.add("hidden");
-
-    // Reset patient verification
-    this.verifiedPatient = null;
-    this.updatePatientVerificationUI(false);
-    const recordFormSection = document.getElementById("recordFormSection");
-    if (recordFormSection) recordFormSection.classList.add("hidden");
+  async verifyPassword(password, storedHash) {
+    const inputHash = await this.hashPassword(password);
+    return inputHash === storedHash;
   }
 
   showNotification(message, type = "info") {
-    const notification = document.createElement("div");
+    const notification = document.getElementById("notification");
+    if (!notification) return;
+
     notification.className = `notification ${type}`;
     notification.textContent = message;
-
-    document.body.appendChild(notification);
-
-    setTimeout(() => {
-      notification.classList.add("show");
-    }, 100);
+    notification.classList.add("show");
 
     setTimeout(() => {
       notification.classList.remove("show");
-      setTimeout(() => notification.remove(), 300);
-    }, 3000);
+    }, 4000);
   }
 }
 
-// Initialize app when DOM is ready
-let app;
+// ============================================================================
+// INITIALIZE APP
+// ============================================================================
 document.addEventListener("DOMContentLoaded", () => {
-  app = new MediSecureApp();
+  new MediSecureApp();
 });
-
-// Navigation functions (called from HTML)
-function showSignup() {
-  if (app) app.showSignup();
-}
-
-function showLogin() {
-  if (app) app.showLogin();
-}
-
-function switchView(view) {
-  if (app) app.switchDashboardView(view);
-}
