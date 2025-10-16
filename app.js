@@ -1,13 +1,4 @@
-// ============================================================================
-// MEDIVAULT - Complete Application JavaScript (CORRECTED VERSION)
-// Healthcare Record Management System - Supabase Integration
-// Version: 2.3 CORRECTED | Date: October 2025
-// Patient Verification Fixed - Name Field Removed
-// ============================================================================
 
-// ============================================================================
-// SUPABASE CONFIGURATION
-// ============================================================================
 const SUPABASE_URL = "https://ebqyefcjvrfhpmqkuaud.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVicXllZmNqdnJmaHBtcWt1YXVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzU1MzUsImV4cCI6MjA3NjAxMTUzNX0.PP5OqeeWFKAlclm6aFPEKv7s3NeExjuO5fLp2VEikOo";
 
