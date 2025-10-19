@@ -1,3 +1,11 @@
+/* ============================================================================
+   MEDIVAULT - SECURE MEDICAL RECORDS PLATFORM
+   Stylesheet without animations - Optimized for performance
+   ============================================================================ */
+
+/* ============================================================================
+   RESET & BASE STYLES
+   ============================================================================ */
 * {
     margin: 0;
     padding: 0;
@@ -5,14 +13,24 @@
 }
 
 :root {
+    /* Primary Colors */
     --primary-color: #667eea;
     --primary-dark: #5a67d8;
+    --primary-light: #7c93f5;
     --secondary-color: #764ba2;
     --accent-color: #f093fb;
+
+    /* Status Colors */
     --success-color: #48bb78;
+    --success-light: #68d391;
     --danger-color: #f56565;
+    --danger-light: #fc8181;
     --warning-color: #ed8936;
+    --warning-light: #f6ad55;
     --info-color: #4299e1;
+    --info-light: #63b3ed;
+
+    /* Grayscale Palette */
     --gray-50: #f7fafc;
     --gray-100: #edf2f7;
     --gray-200: #e2e8f0;
@@ -23,18 +41,43 @@
     --gray-700: #2d3748;
     --gray-800: #1a202c;
     --gray-900: #171923;
+
+    /* Design Tokens */
     --border-radius: 12px;
+    --border-radius-sm: 8px;
     --border-radius-lg: 20px;
+    --border-radius-xl: 24px;
+
+    /* Shadows */
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     --shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.18), 0 2px 4px rgba(0, 0, 0, 0.20);
     --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
     --shadow-xl: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
-    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    --transition-fast: all 0.15s ease;
+
+    /* Transitions - Minimal for performance */
+    --transition: all 0.2s ease;
+    --transition-fast: all 0.1s ease;
+    --transition-slow: all 0.3s ease;
+
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+}
+
+/* ============================================================================
+   BODY & HTML
+   ============================================================================ */
+html {
+    scroll-behavior: smooth;
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: var(--gray-700);
     line-height: 1.6;
@@ -45,7 +88,7 @@ body {
 }
 
 /* ============================================================================
-   LOADING SCREEN - ENHANCED ANIMATION
+   LOADING SCREEN
    ============================================================================ */
 .loading-screen {
     position: fixed;
@@ -59,7 +102,7 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 9999;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .loading-screen.hidden {
@@ -74,33 +117,13 @@ body {
     border: 5px solid rgba(255, 255, 255, 0.3);
     border-top: 5px solid white;
     border-radius: 50%;
-    animation: spin 1s linear infinite, pulse 2s ease-in-out infinite;
     margin-bottom: 1.5rem;
+    animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-    0% {
-        transform: rotate(0deg) scale(1);
-    }
-
-    50% {
-        transform: rotate(180deg) scale(1.1);
-    }
-
-    100% {
-        transform: rotate(360deg) scale(1);
-    }
-}
-
-@keyframes pulse {
-
-    0%,
-    100% {
-        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
-    }
-
-    50% {
-        box-shadow: 0 0 20px 10px rgba(255, 255, 255, 0);
+    to {
+        transform: rotate(360deg);
     }
 }
 
@@ -108,31 +131,18 @@ body {
     color: white;
     font-size: 1.1rem;
     font-weight: 500;
-    opacity: 0.9;
-    animation: fadeInOut 2s ease-in-out infinite;
-}
-
-@keyframes fadeInOut {
-
-    0%,
-    100% {
-        opacity: 0.7;
-    }
-
-    50% {
-        opacity: 1;
-    }
+    opacity: 0.95;
 }
 
 /* ============================================================================
-   CONNECTION STATUS - ENHANCED
+   CONNECTION STATUS BANNER
    ============================================================================ */
 .connection-status {
     position: fixed;
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(10px);
     padding: 1rem 2rem;
     border-radius: var(--border-radius-lg);
@@ -144,69 +154,30 @@ body {
     border: 2px solid var(--info-color);
     color: var(--info-color);
     font-weight: 600;
-    animation: slideInDown 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     max-width: 90%;
+    transition: var(--transition);
 }
 
 .connection-status.success {
     border-color: var(--success-color);
     color: var(--success-color);
-    animation: successPulse 0.6s ease-out;
+    background: rgba(220, 252, 231, 0.98);
 }
 
 .connection-status.error {
     border-color: var(--danger-color);
     color: var(--danger-color);
-    animation: shake 0.5s ease-in-out;
+    background: rgba(254, 242, 242, 0.98);
 }
 
 .connection-status.warning {
     border-color: var(--warning-color);
     color: var(--warning-color);
+    background: rgba(254, 243, 199, 0.98);
 }
 
 .connection-status.hidden {
     display: none;
-}
-
-@keyframes slideInDown {
-    from {
-        transform: translateY(-100px) translateX(-50%) scale(0.8);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateY(0) translateX(-50%) scale(1);
-        opacity: 1;
-    }
-}
-
-@keyframes successPulse {
-
-    0%,
-    100% {
-        transform: translateX(-50%) scale(1);
-    }
-
-    50% {
-        transform: translateX(-50%) scale(1.05);
-    }
-}
-
-@keyframes shake {
-
-    0%,
-    100% {
-        transform: translateX(-50%) translateY(0);
-    }
-
-    25% {
-        transform: translateX(-48%) translateY(-5px);
-    }
-
-    75% {
-        transform: translateX(-52%) translateY(5px);
-    }
 }
 
 /* ============================================================================
@@ -236,30 +207,17 @@ body {
 }
 
 /* ============================================================================
-   AUTH CONTAINER - ENHANCED ANIMATION
+   AUTH CONTAINER (LOGIN & SIGNUP)
    ============================================================================ */
 .auth-container {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(20px);
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-xl);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.5);
     padding: 3rem;
     width: 100%;
     max-width: 480px;
-    animation: slideUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(80px) scale(0.9) rotateX(10deg);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1) rotateX(0);
-    }
 }
 
 .auth-header {
@@ -275,24 +233,12 @@ body {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin-bottom: 0.5rem;
-    animation: titleFloat 3s ease-in-out infinite;
-}
-
-@keyframes titleFloat {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-5px);
-    }
 }
 
 .auth-header .subtitle {
     color: var(--gray-500);
     font-size: 1rem;
+    line-height: 1.5;
 }
 
 /* ============================================================================
@@ -300,23 +246,10 @@ body {
    ============================================================================ */
 .form-step {
     width: 100%;
-    animation: fadeIn 0.5s ease-out;
 }
 
 .form-step.hidden {
     display: none;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 .form-group {
@@ -344,7 +277,7 @@ body {
     border: 2px solid var(--gray-200);
     border-radius: var(--border-radius);
     font-size: 1rem;
-    background: rgba(255, 255, 255, 0.9);
+    background: white;
     transition: var(--transition);
     color: var(--gray-700);
     font-family: inherit;
@@ -355,12 +288,17 @@ body {
 .form-group select:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-    background: white;
-    transform: translateY(-2px) scale(1.005);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
-.form-group input[readonly] {
+.form-group input:hover:not(:focus):not(:disabled),
+.form-group textarea:hover:not(:focus):not(:disabled),
+.form-group select:hover:not(:focus):not(:disabled) {
+    border-color: var(--gray-300);
+}
+
+.form-group input[readonly],
+.form-group input:disabled {
     background: var(--gray-100);
     cursor: not-allowed;
     opacity: 0.7;
@@ -379,7 +317,7 @@ body {
 }
 
 /* ============================================================================
-   PHONE INPUT GROUP - COMPLETE FIXED VERSION
+   PHONE INPUT GROUP
    ============================================================================ */
 .phone-input-group {
     display: flex;
@@ -401,13 +339,13 @@ body {
     cursor: pointer;
     flex-shrink: 0;
     text-align: center;
+    font-weight: 500;
 }
 
 .country-code-select:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-    transform: translateY(-2px);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .country-code-select:hover {
@@ -423,7 +361,7 @@ body {
     border: 2px solid var(--gray-200);
     border-radius: var(--border-radius);
     font-size: 1rem;
-    background: rgba(255, 255, 255, 0.9);
+    background: white;
     transition: var(--transition);
     color: var(--gray-700);
     font-family: inherit;
@@ -432,9 +370,7 @@ body {
 .phone-input-group input[type="tel"]:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-    background: white;
-    transform: translateY(-2px) scale(1.005);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .phone-input-group input[type="tel"]:disabled,
@@ -444,10 +380,17 @@ body {
     opacity: 0.7;
 }
 
+/* ============================================================================
+   PASSWORD INPUT
+   ============================================================================ */
 .password-input {
     position: relative;
     display: flex;
     align-items: center;
+}
+
+.password-input input {
+    padding-right: 3rem;
 }
 
 .toggle-password {
@@ -461,14 +404,24 @@ body {
     padding: 0.5rem;
     border-radius: 50%;
     transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .toggle-password:hover {
     color: var(--primary-color);
     background: rgba(102, 126, 234, 0.1);
-    transform: scale(1.1);
 }
 
+.toggle-password:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* ============================================================================
+   FORM ROW (RESPONSIVE GRID)
+   ============================================================================ */
 .form-row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -477,7 +430,7 @@ body {
 }
 
 /* ============================================================================
-   BUTTON STYLES - ICONS REMOVED, ENHANCED ANIMATIONS
+   BUTTON STYLES
    ============================================================================ */
 .btn {
     display: inline-flex;
@@ -495,25 +448,15 @@ body {
     font-family: inherit;
     width: 100%;
     position: relative;
-    overflow: hidden;
+    white-space: nowrap;
 }
 
-.btn::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.3);
-    transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
+.btn:hover {
+    transform: translateY(-1px);
 }
 
-.btn:hover::before {
-    width: 300px;
-    height: 300px;
+.btn:active {
+    transform: translateY(0);
 }
 
 .btn-primary {
@@ -523,24 +466,25 @@ body {
 }
 
 .btn-primary:hover {
-    transform: translateY(-3px);
     box-shadow: var(--shadow-lg);
+    opacity: 0.95;
 }
 
 .btn-primary:active {
-    transform: translateY(-1px) scale(0.98);
+    opacity: 0.9;
+    box-shadow: var(--shadow);
 }
 
 .btn-secondary {
     background: var(--gray-100);
     color: var(--gray-700);
     border: 2px solid var(--gray-200);
+    box-shadow: var(--shadow-sm);
 }
 
 .btn-secondary:hover {
     background: var(--gray-200);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow);
+    border-color: var(--gray-300);
 }
 
 .btn-danger {
@@ -550,8 +494,7 @@ body {
 }
 
 .btn-danger:hover {
-    background: #e53e3e;
-    transform: translateY(-2px);
+    background: var(--danger-light);
     box-shadow: var(--shadow-lg);
 }
 
@@ -566,8 +509,13 @@ body {
     transform: none !important;
 }
 
+.btn:focus-visible {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
 /* ============================================================================
-   PASSWORD STRENGTH & VALIDATION
+   PASSWORD STRENGTH INDICATOR
    ============================================================================ */
 .password-strength {
     font-size: 0.85rem;
@@ -575,46 +523,41 @@ body {
     margin-top: 0.5rem;
     padding: 0.5rem;
     border-radius: var(--border-radius);
-    animation: slideInLeft 0.3s ease-out;
-}
-
-@keyframes slideInLeft {
-    from {
-        opacity: 0;
-        transform: translateX(-20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+    transition: var(--transition);
 }
 
 .password-strength.weak {
     color: var(--danger-color);
     background: rgba(245, 101, 101, 0.1);
+    border-left: 3px solid var(--danger-color);
 }
 
 .password-strength.fair {
     color: var(--warning-color);
     background: rgba(237, 137, 54, 0.1);
+    border-left: 3px solid var(--warning-color);
 }
 
 .password-strength.good {
     color: var(--info-color);
     background: rgba(66, 153, 225, 0.1);
+    border-left: 3px solid var(--info-color);
 }
 
 .password-strength.strong {
     color: var(--success-color);
     background: rgba(72, 187, 120, 0.1);
+    border-left: 3px solid var(--success-color);
 }
 
+/* ============================================================================
+   PASSWORD MATCH INDICATOR
+   ============================================================================ */
 .password-match {
     font-size: 0.85rem;
     font-weight: 600;
     margin-top: 0.5rem;
-    animation: slideInLeft 0.3s ease-out;
+    transition: var(--transition);
 }
 
 /* ============================================================================
@@ -624,6 +567,7 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    margin: 1rem 0;
 }
 
 .checkbox-group label {
@@ -633,21 +577,18 @@ body {
     cursor: pointer;
     font-weight: 500;
     color: var(--gray-600);
+    user-select: none;
 }
 
 .checkbox-group input[type="checkbox"] {
-    width: auto;
+    width: 18px;
+    height: 18px;
     cursor: pointer;
-    transform: scale(1.2);
-    transition: var(--transition);
-}
-
-.checkbox-group input[type="checkbox"]:checked {
-    transform: scale(1.3);
+    accent-color: var(--primary-color);
 }
 
 /* ============================================================================
-   TEXT UTILITIES
+   TEXT UTILITY CLASSES
    ============================================================================ */
 .text-center {
     text-align: center;
@@ -677,33 +618,24 @@ a {
     text-decoration: none;
     font-weight: 500;
     transition: var(--transition);
-    position: relative;
-}
-
-a::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: -2px;
-    left: 0;
-    background: var(--primary-color);
-    transition: width 0.3s ease;
-}
-
-a:hover::after {
-    width: 100%;
 }
 
 a:hover {
     color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+a:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+    border-radius: 4px;
 }
 
 /* ============================================================================
-   DASHBOARD HEADER - STICKY WITH ENHANCED ANIMATION
+   DASHBOARD HEADER
    ============================================================================ */
 .dashboard-header {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--gray-200);
     padding: 1.5rem 2rem;
@@ -712,19 +644,6 @@ a:hover {
     top: 0;
     z-index: 100;
     transition: var(--transition);
-    animation: slideDown 0.5s ease-out;
-}
-
-@keyframes slideDown {
-    from {
-        transform: translateY(-100%);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
 }
 
 .dashboard-header:hover {
@@ -770,7 +689,6 @@ a:hover {
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
-    animation: fadeIn 0.6s ease-out;
 }
 
 .dashboard-view,
@@ -784,7 +702,7 @@ a:hover {
 }
 
 /* ============================================================================
-   STATS GRID - ENHANCED ANIMATION
+   STATS GRID
    ============================================================================ */
 .stats-grid {
     display: grid;
@@ -794,7 +712,7 @@ a:hover {
 }
 
 .stat-card {
-    background: rgba(255, 255, 255, 0.95);
+    background: white;
     border: 1px solid var(--gray-200);
     border-radius: var(--border-radius-lg);
     padding: 1.5rem;
@@ -803,54 +721,17 @@ a:hover {
     gap: 1.5rem;
     box-shadow: var(--shadow);
     transition: var(--transition);
-    animation: scaleIn 0.5s ease-out backwards;
-}
-
-@keyframes scaleIn {
-    from {
-        opacity: 0;
-        transform: scale(0.8) rotateY(20deg);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1) rotateY(0);
-    }
-}
-
-.stat-card:nth-child(1) {
-    animation-delay: 0.1s;
-}
-
-.stat-card:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.stat-card:nth-child(3) {
-    animation-delay: 0.3s;
 }
 
 .stat-card:hover {
-    transform: translateY(-8px) scale(1.02);
     box-shadow: var(--shadow-lg);
     border-color: var(--primary-color);
+    transform: translateY(-2px);
 }
 
 .stat-icon {
     font-size: 3rem;
-    animation: bounce 2s ease-in-out infinite;
-}
-
-@keyframes bounce {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-10px);
-    }
+    line-height: 1;
 }
 
 .stat-details h3 {
@@ -858,32 +739,30 @@ a:hover {
     font-weight: 700;
     color: var(--primary-color);
     margin: 0;
+    line-height: 1;
 }
 
 .stat-details p {
     font-size: 0.9rem;
     color: var(--gray-600);
-    margin: 0;
+    margin: 0.5rem 0 0 0;
 }
 
 /* ============================================================================
-   VERIFICATION CARD - ENHANCED
+   VERIFICATION CARD
    ============================================================================ */
 .verification-card {
-    background: rgba(255, 255, 255, 0.95);
+    background: white;
     border: 2px solid var(--gray-200);
     border-radius: var(--border-radius-lg);
     padding: 2rem;
     margin-bottom: 2rem;
     box-shadow: var(--shadow);
     transition: var(--transition);
-    animation: fadeIn 0.5s ease-out;
 }
 
 .verification-card:hover {
-    box-shadow: var(--shadow-lg);
     border-color: var(--primary-color);
-    transform: translateY(-2px);
 }
 
 .verification-card h3 {
@@ -899,16 +778,14 @@ a:hover {
     border-radius: var(--border-radius);
     font-weight: 600;
     text-align: center;
-    transition: var(--transition);
     border: 2px solid transparent;
-    animation: pulse 2s ease-in-out infinite;
+    transition: var(--transition);
 }
 
 .verification-status.success {
     background: linear-gradient(135deg, #dcfce7, #bbf7d0);
     color: #166534;
     border-color: #86efac;
-    animation: successBounce 0.6s ease-out;
 }
 
 .verification-status.error {
@@ -917,39 +794,12 @@ a:hover {
     border-color: #fca5a5;
 }
 
-@keyframes successBounce {
-
-    0%,
-    100% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.05);
-    }
-}
-
 .patient-info {
     margin-top: 1rem;
     background: white;
     border-radius: var(--border-radius);
     padding: 1.5rem;
     border: 2px solid var(--success-color);
-    animation: expandIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@keyframes expandIn {
-    from {
-        opacity: 0;
-        transform: scale(0.8);
-        max-height: 0;
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1);
-        max-height: 500px;
-    }
 }
 
 .patient-info.hidden {
@@ -966,6 +816,7 @@ a:hover {
 .patient-details p {
     margin-bottom: 0.5rem;
     color: var(--gray-600);
+    line-height: 1.6;
 }
 
 .patient-details strong {
@@ -974,7 +825,7 @@ a:hover {
 }
 
 /* ============================================================================
-   NEW PATIENT PROMPT - ENHANCED
+   NEW PATIENT PROMPT
    ============================================================================ */
 .new-patient-prompt {
     margin-top: 1.5rem;
@@ -983,7 +834,6 @@ a:hover {
     border: 2px dashed var(--primary-color);
     border-radius: var(--border-radius);
     text-align: center;
-    animation: fadeIn 0.5s ease-out;
 }
 
 .new-patient-prompt.hidden {
@@ -1002,16 +852,15 @@ a:hover {
 }
 
 /* ============================================================================
-   RECORD FORM SECTION - ENHANCED
+   RECORD FORM SECTION
    ============================================================================ */
 .record-form-section {
-    background: rgba(255, 255, 255, 0.95);
+    background: white;
     border-radius: var(--border-radius-lg);
     padding: 2rem;
     box-shadow: var(--shadow);
     margin-bottom: 2rem;
     border: 2px solid var(--gray-200);
-    animation: slideUp 0.5s ease-out;
 }
 
 .record-form-section.hidden {
@@ -1039,7 +888,6 @@ a:hover {
 .form-section:hover {
     background: white;
     box-shadow: var(--shadow-sm);
-    transform: translateX(5px);
 }
 
 .form-section h3 {
@@ -1073,11 +921,10 @@ a:hover {
    RECORDS SECTION
    ============================================================================ */
 .records-section {
-    background: rgba(255, 255, 255, 0.95);
+    background: white;
     border-radius: var(--border-radius-lg);
     padding: 2rem;
     box-shadow: var(--shadow);
-    animation: fadeIn 0.6s ease-out;
 }
 
 .records-section h2 {
@@ -1100,13 +947,12 @@ a:hover {
     border: 1px solid var(--gray-200);
     box-shadow: var(--shadow-sm);
     transition: var(--transition);
-    animation: scaleIn 0.4s ease-out backwards;
 }
 
 .record-card:hover {
-    transform: translateY(-5px) rotateX(2deg);
     box-shadow: var(--shadow-lg);
     border-color: var(--primary-color);
+    transform: translateY(-3px);
 }
 
 .record-header {
@@ -1122,8 +968,12 @@ a:hover {
     font-size: 1.1rem;
     color: var(--gray-800);
     margin: 0;
+    font-weight: 600;
 }
 
+/* ============================================================================
+   BADGE (SEVERITY INDICATORS)
+   ============================================================================ */
 .badge {
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
@@ -1131,7 +981,6 @@ a:hover {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    animation: pulse 2s ease-in-out infinite;
 }
 
 .badge.low {
@@ -1172,7 +1021,6 @@ a:hover {
     text-align: center;
     padding: 4rem 2rem;
     color: var(--gray-500);
-    animation: fadeIn 0.5s ease-out;
 }
 
 .empty-state p {
@@ -1181,7 +1029,7 @@ a:hover {
 }
 
 /* ============================================================================
-   NOTIFICATION - ENHANCED
+   NOTIFICATION TOAST
    ============================================================================ */
 .notification {
     position: fixed;
@@ -1195,48 +1043,35 @@ a:hover {
     font-weight: 600;
     backdrop-filter: blur(20px);
     opacity: 0;
-    transform: translateX(120%);
-    transition: var(--transition);
+    transform: translateX(100%);
+    transition: all 0.3s ease;
 }
 
 .notification.show {
     opacity: 1;
     transform: translateX(0);
-    animation: slideInRight 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@keyframes slideInRight {
-    from {
-        opacity: 0;
-        transform: translateX(100%);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
 }
 
 .notification.success {
-    background: linear-gradient(135deg, rgba(220, 252, 231, 0.95), rgba(187, 247, 208, 0.95));
+    background: linear-gradient(135deg, rgba(220, 252, 231, 0.98), rgba(187, 247, 208, 0.98));
     color: #166534;
     border: 2px solid #bbf7d0;
 }
 
 .notification.error {
-    background: linear-gradient(135deg, rgba(254, 242, 242, 0.95), rgba(254, 202, 202, 0.95));
+    background: linear-gradient(135deg, rgba(254, 242, 242, 0.98), rgba(254, 202, 202, 0.98));
     color: #991b1b;
     border: 2px solid #fecaca;
 }
 
 .notification.info {
-    background: linear-gradient(135deg, rgba(239, 246, 255, 0.95), rgba(219, 234, 254, 0.95));
+    background: linear-gradient(135deg, rgba(239, 246, 255, 0.98), rgba(219, 234, 254, 0.98));
     color: #1e40af;
     border: 2px solid #dbeafe;
 }
 
 .notification.warning {
-    background: linear-gradient(135deg, rgba(254, 243, 199, 0.95), rgba(253, 230, 138, 0.95));
+    background: linear-gradient(135deg, rgba(254, 243, 199, 0.98), rgba(253, 230, 138, 0.98));
     color: #92400e;
     border: 2px solid #fde68a;
 }
@@ -1246,6 +1081,18 @@ a:hover {
    ============================================================================ */
 .hidden {
     display: none !important;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
 }
 
 /* ============================================================================
@@ -1258,19 +1105,44 @@ a:hover {
 
 ::-webkit-scrollbar-track {
     background: var(--gray-100);
+    border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
     background: var(--gray-400);
     border-radius: 5px;
+    transition: var(--transition);
 }
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--gray-500);
 }
 
+/* Firefox scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--gray-400) var(--gray-100);
+}
+
 /* ============================================================================
-   RESPONSIVE DESIGN
+   RESPONSIVE DESIGN - TABLET
+   ============================================================================ */
+@media (max-width: 1024px) {
+    .dashboard-content {
+        padding: 1.5rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .records-list {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN - MOBILE
    ============================================================================ */
 @media (max-width: 768px) {
     .auth-container {
@@ -1278,7 +1150,15 @@ a:hover {
         margin: 1rem;
     }
 
+    .auth-header h1 {
+        font-size: 1.75rem;
+    }
+
     .dashboard-content {
+        padding: 1rem;
+    }
+
+    .dashboard-header {
         padding: 1rem;
     }
 
@@ -1342,23 +1222,35 @@ a:hover {
     }
 }
 
+/* ============================================================================
+   RESPONSIVE DESIGN - SMALL MOBILE
+   ============================================================================ */
 @media (max-width: 480px) {
     .auth-container {
         padding: 1.5rem;
+        margin: 0.5rem;
     }
 
     .auth-header h1 {
         font-size: 1.5rem;
     }
 
+    .auth-header .subtitle {
+        font-size: 0.9rem;
+    }
+
     .dashboard-header {
         padding: 1rem;
+    }
+
+    .hospital-info h1 {
+        font-size: 1.25rem;
     }
 
     .verification-card,
     .record-form-section,
     .records-section {
-        padding: 1.5rem;
+        padding: 1rem;
     }
 
     .stat-card {
@@ -1366,10 +1258,29 @@ a:hover {
         text-align: center;
     }
 
+    .stat-icon {
+        font-size: 2.5rem;
+    }
+
+    .stat-details h3 {
+        font-size: 1.75rem;
+    }
+
     .form-group input,
     .form-group textarea,
     .form-group select {
         font-size: 0.95rem;
+        padding: 0.875rem;
+    }
+
+    .btn {
+        padding: 0.875rem 1.25rem;
+        font-size: 0.95rem;
+    }
+
+    .btn-lg {
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
     }
 
     .phone-input-group {
@@ -1386,6 +1297,18 @@ a:hover {
         width: 100%;
         min-width: 100%;
     }
+
+    .connection-status {
+        top: 10px;
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .notification {
+        top: 70px;
+        padding: 0.875rem 1.25rem;
+        font-size: 0.9rem;
+    }
 }
 
 /* ============================================================================
@@ -1396,12 +1319,15 @@ a:hover {
     .dashboard-header,
     .btn,
     .connection-status,
-    .notification {
+    .notification,
+    .header-actions,
+    .loading-screen {
         display: none !important;
     }
 
     .record-card {
         page-break-inside: avoid;
+        border: 1px solid #000;
     }
 
     body {
@@ -1411,23 +1337,241 @@ a:hover {
     .dashboard-content {
         padding: 0;
     }
+
+    .dashboard-section {
+        background: white;
+    }
+
+    .stat-card,
+    .verification-card,
+    .record-form-section,
+    .records-section {
+        box-shadow: none;
+        border: 1px solid #000;
+    }
 }
 
 /* ============================================================================
    ACCESSIBILITY IMPROVEMENTS
    ============================================================================ */
-.btn:focus,
-input:focus,
-textarea:focus,
-select:focus {
+.btn:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+a:focus-visible {
     outline: 3px solid var(--primary-color);
     outline-offset: 2px;
 }
 
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .btn-primary {
+        border: 2px solid white;
+    }
+
+    .stat-card,
+    .verification-card,
+    .record-form-section {
+        border-width: 2px;
+    }
+}
+
+/* Reduced motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
-    * {
+
+    *,
+    *::before,
+    *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .loader {
+        animation: none;
+        border: 5px solid white;
     }
 }
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+    /* You can add dark mode styles here if needed */
+}
+
+/* ============================================================================
+   LOADING STATES
+   ============================================================================ */
+.loading {
+    pointer-events: none;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+/* ============================================================================
+   FOCUS MANAGEMENT
+   ============================================================================ */
+.focus-trap {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+    pointer-events: none;
+}
+
+/* ============================================================================
+   CUSTOM SELECT STYLING
+   ============================================================================ */
+select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+    padding-right: 3rem;
+}
+
+/* ============================================================================
+   TABLE STYLES (IF NEEDED FOR RECORDS)
+   ============================================================================ */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+thead {
+    background: var(--gray-100);
+}
+
+th {
+    text-align: left;
+    padding: 1rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    border-bottom: 2px solid var(--gray-300);
+}
+
+td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+tbody tr:hover {
+    background: var(--gray-50);
+}
+
+/* ============================================================================
+   TOOLTIP (IF NEEDED)
+   ============================================================================ */
+[data-tooltip] {
+    position: relative;
+    cursor: help;
+}
+
+[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.5rem 1rem;
+    background: var(--gray-800);
+    color: white;
+    border-radius: var(--border-radius);
+    font-size: 0.875rem;
+    white-space: nowrap;
+    z-index: 1000;
+    margin-bottom: 0.5rem;
+}
+
+/* ============================================================================
+   MODAL/DIALOG (IF NEEDED)
+   ============================================================================ */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.modal-content {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    padding: 2rem;
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-xl);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--gray-200);
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--gray-500);
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: var(--transition);
+}
+
+.modal-close:hover {
+    background: var(--gray-100);
+    color: var(--gray-700);
+}
+
+/* ============================================================================
+   PROGRESS BAR (IF NEEDED)
+   ============================================================================ */
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--gray-200);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    transition: width 0.3s ease;
+}
+
+/* ============================================================================
+   END OF STYLESHEET
+   ============================================================================ */
