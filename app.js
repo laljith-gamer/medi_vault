@@ -2,15 +2,6 @@ const SUPABASE_URL = "https://ebqyefcjvrfhpmqkuaud.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVicXllZmNqdnJmaHBtcWt1YXVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzU1MzUsImV4cCI6MjA3NjAxMTUzNX0.PP5OqeeWFKAlclm6aFPEKv7s3NeExjuO5fLp2VEikOo";
 
-// Validate credentials on load
-if (
-  SUPABASE_URL === "YOUR_SUPABASE_URL_HERE" ||
-  !SUPABASE_URL.includes("supabase.co")
-) {
-  console.error("❌ CRITICAL: Please update Supabase credentials in app.js!");
-  console.error("Get your credentials from: https://supabase.com/dashboard");
-}
-
 // Global variables
 let supabase;
 let isSupabaseInitialized = false;
@@ -133,7 +124,7 @@ function hideLoadingScreen() {
 // ============================================================================
 // MAIN APPLICATION CLASS
 // ============================================================================
-class MediSecureApp {
+class MediVaultApp {
   constructor() {
     this.currentSection = "signup";
     this.currentDashboardView = "dashboard";
@@ -147,7 +138,7 @@ class MediSecureApp {
   }
 
   async initializeApp() {
-    console.log("🚀 Initializing MediSecure App...");
+    console.log("🚀 Initializing MediVault App...");
     showConnectionStatus("Initializing application...", "info", 0);
 
     const networkOk = await checkNetworkConnectivity();
@@ -172,7 +163,7 @@ class MediSecureApp {
 
     showConnectionStatus("Application ready!", "success");
     hideLoadingScreen();
-    console.log("✅ MediSecure App initialized successfully");
+    console.log("✅ MediVault App initialized successfully");
   }
 
   async testDatabaseConnection() {
@@ -426,7 +417,7 @@ class MediSecureApp {
       visitTime.value = now.toTimeString().slice(0, 5);
     }
 
-    // Phone number validation - numbers only
+    // Phone number validation
     this.setupPhoneValidation();
   }
 
@@ -615,7 +606,6 @@ class MediSecureApp {
     const countryCodeInput = document.getElementById("countryCode");
     const contactPhoneInput = document.getElementById("contactPhone");
 
-    // Check if all required elements exist
     if (
       !passwordInput ||
       !confirmPasswordInput ||
@@ -623,13 +613,6 @@ class MediSecureApp {
       !countryCodeInput ||
       !contactPhoneInput
     ) {
-      console.error("Form elements not found:", {
-        password: !!passwordInput,
-        confirmPassword: !!confirmPasswordInput,
-        adminEmail: !!adminEmailInput,
-        countryCode: !!countryCodeInput,
-        contactPhone: !!contactPhoneInput,
-      });
       this.showNotification(
         "Form initialization error. Please refresh the page.",
         "error"
@@ -653,7 +636,6 @@ class MediSecureApp {
       return;
     }
 
-    // Validate phone number (should be 10 digits)
     if (!/^\d{10}$/.test(contactPhone)) {
       this.showNotification(
         "Please enter a valid 10-digit phone number",
@@ -662,7 +644,6 @@ class MediSecureApp {
       return;
     }
 
-    // Combine country code with phone number
     const fullPhone = countryCode + contactPhone;
 
     try {
@@ -1355,5 +1336,5 @@ class MediSecureApp {
 // INITIALIZE APP
 // ============================================================================
 document.addEventListener("DOMContentLoaded", () => {
-  new MediSecureApp();
+  new MediVaultApp();
 });
