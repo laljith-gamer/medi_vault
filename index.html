@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MediVault - Secure Medical Records Platform">
     <title>MediVault - Secure Medical Records Platform</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,22 +13,22 @@
 </head>
 <body>
     <!-- Loading Screen -->
-    <div id="loadingScreen" class="loading-screen">
-        <div class="loader"></div>
+    <div id="loadingScreen" class="loading-screen" role="status" aria-live="polite">
+        <div class="loader" aria-hidden="true"></div>
         <p>Initializing secure connection...</p>
     </div>
 
     <!-- Connection Status Notification -->
-    <div id="connectionStatus" class="connection-status hidden"></div>
+    <div id="connectionStatus" class="connection-status hidden" role="alert" aria-live="assertive"></div>
 
     <!-- Notification Container -->
-    <div id="notification" class="notification"></div>
+    <div id="notification" class="notification" role="alert" aria-live="polite"></div>
 
     <!-- SIGNUP SECTION -->
-    <section id="signupSection" class="auth-section hidden">
+    <section id="signupSection" class="auth-section hidden" aria-labelledby="signup-title">
         <div class="auth-container">
             <div class="auth-header">
-                <h1>🏥 MediVault</h1>
+                <h1 id="signup-title">🏥 MediVault</h1>
                 <p class="subtitle">Join our secure medical records network</p>
             </div>
 
@@ -39,12 +40,12 @@
 
                 <div class="form-group">
                     <label for="hospitalId">Hospital ID *</label>
-                    <input type="text" id="hospitalId" placeholder="e.g., AIIMS-DEL-001" required>
+                    <input type="text" id="hospitalId" placeholder="e.g., AIIMS-DEL-001" required aria-required="true">
                 </div>
 
                 <div class="form-group">
                     <label for="licenseNumber">License Number *</label>
-                    <input type="text" id="licenseNumber" placeholder="e.g., DL/MED/2023/001" required>
+                    <input type="text" id="licenseNumber" placeholder="e.g., DL/MED/2023/001" required aria-required="true">
                 </div>
 
                 <button type="button" id="verifyBtn" class="btn btn-primary btn-lg">
@@ -61,40 +62,38 @@
                 <form id="signupForm">
                     <div class="form-group">
                         <label for="hospitalName">Hospital Name</label>
-                        <input type="text" id="hospitalName" readonly>
+                        <input type="text" id="hospitalName" readonly aria-readonly="true">
                     </div>
 
                     <div class="form-group">
                         <label for="adminEmail">Admin Email *</label>
-                        <input type="email" id="adminEmail" placeholder="admin@hospital.com" required>
+                        <input type="email" id="adminEmail" placeholder="admin@hospital.com" required aria-required="true">
                     </div>
 
                     <div class="form-group">
                         <label for="contactPhone">Contact Phone *</label>
                         <div class="phone-input-group">
-                            <select id="countryCode" class="country-code-select">
+                            <select id="countryCode" class="country-code-select" aria-label="Country code">
                                 <option value="+91" selected>🇮🇳 +91</option>
                             </select>
-                            <input type="tel" id="contactPhone" placeholder="9876543210" pattern="[0-9]{10}" maxlength="10" required>
+                            <input type="tel" id="contactPhone" placeholder="9876543210" pattern="[0-9]{10}" maxlength="10" required aria-required="true">
                         </div>
                         <small>Enter 10-digit mobile number</small>
                     </div>
-                    
-                    
 
                     <div class="form-group">
                         <label for="password">Password *</label>
                         <div class="password-input">
-                            <input type="password" id="password" placeholder="Create strong password" required>
-                            <button type="button" id="togglePassword" class="toggle-password">👁️</button>
+                            <input type="password" id="password" placeholder="Create strong password" required aria-required="true">
+                            <button type="button" id="togglePassword" class="toggle-password" aria-label="Toggle password visibility">👁️</button>
                         </div>
-                        <div id="passwordStrength" class="password-strength"></div>
+                        <div id="passwordStrength" class="password-strength" aria-live="polite"></div>
                     </div>
 
                     <div class="form-group">
                         <label for="confirmPassword">Confirm Password *</label>
-                        <input type="password" id="confirmPassword" placeholder="Re-enter password" required>
-                        <div id="passwordMatch" class="password-match"></div>
+                        <input type="password" id="confirmPassword" placeholder="Re-enter password" required aria-required="true">
+                        <div id="passwordMatch" class="password-match" aria-live="polite"></div>
                     </div>
 
                     <button type="submit" class="btn btn-primary btn-lg">
@@ -106,24 +105,24 @@
     </section>
 
     <!-- LOGIN SECTION -->
-    <section id="loginSection" class="auth-section hidden">
+    <section id="loginSection" class="auth-section hidden" aria-labelledby="login-title">
         <div class="auth-container">
             <div class="auth-header">
-                <h1>🏥 MediVault</h1>
+                <h1 id="login-title">🏥 MediVault</h1>
                 <p class="subtitle">Sign in to your hospital dashboard</p>
             </div>
 
             <form id="loginForm">
                 <div class="form-group">
                     <label for="loginHospitalId">Hospital ID *</label>
-                    <input type="text" id="loginHospitalId" placeholder="e.g., AIIMS-DEL-001" required>
+                    <input type="text" id="loginHospitalId" placeholder="e.g., AIIMS-DEL-001" required aria-required="true">
                 </div>
 
                 <div class="form-group">
                     <label for="loginPassword">Password *</label>
                     <div class="password-input">
-                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
-                        <button type="button" id="toggleLoginPassword" class="toggle-password">👁️</button>
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required aria-required="true">
+                        <button type="button" id="toggleLoginPassword" class="toggle-password" aria-label="Toggle password visibility">👁️</button>
                     </div>
                 </div>
 
@@ -148,41 +147,41 @@
     </section>
 
     <!-- DASHBOARD SECTION -->
-    <section id="dashboardSection" class="dashboard-section hidden">
+    <section id="dashboardSection" class="dashboard-section hidden" aria-labelledby="dashboard-title">
         <header class="dashboard-header">
             <div class="header-content">
                 <div class="hospital-info">
                     <h1 id="dashboardHospitalName">Hospital Name</h1>
                     <p id="dashboardHospitalId">ID: HOSPITAL-ID</p>
                 </div>
-                <div class="header-actions">
+                <nav class="header-actions" aria-label="Main navigation">
                     <button id="showDashboardView" class="btn btn-secondary">Dashboard</button>
                     <button id="showAddRecordView" class="btn btn-primary">Add Record</button>
                     <button id="logoutBtn" class="btn btn-danger">Logout</button>
-                </div>
+                </nav>
             </div>
         </header>
 
-        <div class="dashboard-content">
+        <main class="dashboard-content">
             <!-- Dashboard View -->
             <div id="dashboardView" class="dashboard-view">
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-icon">📋</div>
+                        <div class="stat-icon" aria-hidden="true">📋</div>
                         <div class="stat-details">
                             <h3 id="totalRecords">0</h3>
                             <p>Total Medical Records</p>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">✅</div>
+                        <div class="stat-icon" aria-hidden="true">✅</div>
                         <div class="stat-details">
                             <h3 id="activeRecords">0</h3>
                             <p>Active Records</p>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">👥</div>
+                        <div class="stat-icon" aria-hidden="true">👥</div>
                         <div class="stat-details">
                             <h3 id="totalPatients">0</h3>
                             <p>Total Patients</p>
@@ -212,13 +211,13 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="patientId">Patient ABHA Number</label>
-                            <input type="text" id="patientId" placeholder="14-digit ABHA" maxlength="14" pattern="[0-9]{14}">
-                            <small>Enter 14-digit ABHA number</small>
+                            <input type="text" id="patientId" placeholder="14-digit ABHA" maxlength="14" pattern="[0-9]{14}" aria-describedby="patientIdHelp">
+                            <small id="patientIdHelp">Enter 14-digit ABHA number</small>
                         </div>
                         <div class="form-group">
                             <label for="patientPhone">Phone Number</label>
-                            <input type="tel" id="patientPhone" placeholder="10-digit mobile" maxlength="10" pattern="[0-9]{10}">
-                            <small>Enter 10-digit mobile number</small>
+                            <input type="tel" id="patientPhone" placeholder="10-digit mobile" maxlength="10" pattern="[0-9]{10}" aria-describedby="patientPhoneHelp">
+                            <small id="patientPhoneHelp">Enter 10-digit mobile number</small>
                         </div>
                     </div>
 
@@ -226,7 +225,7 @@
                         Verify Patient
                     </button>
 
-                    <div id="verificationStatus" class="verification-status">
+                    <div id="verificationStatus" class="verification-status" role="status" aria-live="polite">
                         ⚠️ Patient Not Verified
                     </div>
 
@@ -256,18 +255,18 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="newPatientName">Full Name *</label>
-                                    <input type="text" id="newPatientName" required>
+                                    <input type="text" id="newPatientName" required aria-required="true">
                                 </div>
                                 <div class="form-group">
                                     <label for="newPatientDOB">Date of Birth *</label>
-                                    <input type="date" id="newPatientDOB" required>
+                                    <input type="date" id="newPatientDOB" required aria-required="true">
                                 </div>
                             </div>
                             
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="newPatientGender">Gender *</label>
-                                    <select id="newPatientGender" required>
+                                    <select id="newPatientGender" required aria-required="true">
                                         <option value="">Select Gender</option>
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
@@ -296,7 +295,7 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="newPatientPhone">Phone Number *</label>
-                                    <input type="tel" id="newPatientPhone" readonly>
+                                    <input type="tel" id="newPatientPhone" readonly aria-readonly="true">
                                     <small>From verification above</small>
                                 </div>
                                 <div class="form-group">
@@ -336,7 +335,7 @@
                                 <div class="form-group">
                                     <label for="emergencyContactPhone">Contact Phone</label>
                                     <div class="phone-input-group">
-                                        <select id="emergencyCountryCode" class="country-code-select">
+                                        <select id="emergencyCountryCode" class="country-code-select" aria-label="Emergency contact country code">
                                             <option value="+91" selected>🇮🇳 +91</option>
                                             <option value="+1">🇺🇸 +1</option>
                                             <option value="+44">🇬🇧 +44</option>
@@ -367,7 +366,7 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="visitDate">Visit Date *</label>
-                                    <input type="date" id="visitDate" required>
+                                    <input type="date" id="visitDate" required aria-required="true">
                                 </div>
                                 <div class="form-group">
                                     <label for="visitTime">Visit Time</label>
@@ -375,7 +374,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="visitType">Visit Type *</label>
-                                    <select id="visitType" required>
+                                    <select id="visitType" required aria-required="true">
                                         <option value="">Select Type</option>
                                         <option value="OPD">OPD</option>
                                         <option value="IPD">IPD</option>
@@ -392,17 +391,17 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="doctorName">Doctor Name *</label>
-                                    <input type="text" id="doctorName" required>
+                                    <input type="text" id="doctorName" required aria-required="true">
                                 </div>
                                 <div class="form-group">
                                     <label for="doctorRegistration">Registration Number *</label>
-                                    <input type="text" id="doctorRegistration" required>
+                                    <input type="text" id="doctorRegistration" required aria-required="true">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="doctorQualification">Qualification *</label>
-                                    <input type="text" id="doctorQualification" placeholder="MBBS, MD" required>
+                                    <input type="text" id="doctorQualification" placeholder="MBBS, MD" required aria-required="true">
                                 </div>
                                 <div class="form-group">
                                     <label for="doctorSpecialization">Specialization</label>
@@ -415,7 +414,7 @@
                             <h3>Clinical Information</h3>
                             <div class="form-group">
                                 <label for="chiefComplaint">Chief Complaint *</label>
-                                <textarea id="chiefComplaint" rows="3" required></textarea>
+                                <textarea id="chiefComplaint" rows="3" required aria-required="true"></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="complaintDuration">Complaint Duration</label>
@@ -467,7 +466,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="provisionalDiagnosis">Provisional Diagnosis *</label>
-                                <textarea id="provisionalDiagnosis" rows="2" required></textarea>
+                                <textarea id="provisionalDiagnosis" rows="2" required aria-required="true"></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="finalDiagnosis">Final Diagnosis</label>
@@ -539,7 +538,7 @@
                     </form>
                 </div>
             </div>
-        </div>
+        </main>
     </section>
 
     <script src="app.js"></script>
